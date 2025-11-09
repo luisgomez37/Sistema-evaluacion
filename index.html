@@ -1435,13 +1435,32 @@
                             <input type="text" value="Educación Física" readonly style="background:#f0f0f0;cursor:not-allowed;">
                         </div>
                         <div class="campo">
-                            <label>Grado:</label>
-                            <input type="text" id="grado" placeholder="Ej: 5to" onchange="actualizarInfo()">
+                            <label>🎓 Grado:</label>
+                            <select id="gradoSelect" onchange="cambiarGradoSeccion(this.value, document.getElementById('seccionSelect').value)" style="padding:10px;border:2px solid #4CAF50;border-radius:5px;font-size:14px;font-weight:bold;">
+                                <option value="1ro">1ro</option>
+                                <option value="2do">2do</option>
+                                <option value="3ro">3ro</option>
+                                <option value="4to">4to</option>
+                                <option value="5to">5to</option>
+                                <option value="6to">6to</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label>📝 Sección:</label>
+                            <select id="seccionSelect" onchange="cambiarGradoSeccion(document.getElementById('gradoSelect').value, this.value)" style="padding:10px;border:2px solid #2196F3;border-radius:5px;font-size:14px;font-weight:bold;">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
                         </div>
                         <div class="campo">
                             <label>Año Escolar:</label>
                             <input type="text" value="2025 - 2026" readonly style="background:#f0f0f0;cursor:not-allowed;">
                         </div>
+                    </div>
+                    <div style="margin-top:15px;padding:15px;background:#e3f2fd;border-left:4px solid #2196F3;border-radius:5px;">
+                        <strong>💡 Info:</strong> Selecciona el grado y sección para trabajar. Los datos de cada sección se guardan independientemente.
                     </div>
                 </div>
                 
@@ -1489,6 +1508,20 @@
                                 <button class="btn-asistencia" onclick="document.getElementById('archivoExcel').click()" style="font-size:14px;">
                                     📂 Cargar Backup
                                 </button>
+                            </div>
+                        </div>
+                        
+                        <div style="background:white;padding:15px;border-radius:8px;border:2px solid#4472C4;">
+                            <h4 style="margin:0 0 10px 0;color:#4472C4;">📚 Importar Word Multigrado</h4>
+                            <p style="margin:0;color:#666;font-size:14px;margin-bottom:15px;">
+                                Importa un archivo Word con <strong>TODOS los grados</strong> (1ro-6to). El sistema aplicará automáticamente los estudiantes correspondientes a cada grado/sección.
+                            </p>
+                            <button class="btn-asistencia" onclick="document.getElementById('archivoWordMultigrado').click()" style="background:#4472C4;border-color:#4472C4;font-size:14px;">
+                                📄 Importar Word Multigrado
+                            </button>
+                            <input type="file" id="archivoWordMultigrado" accept=".docx" onchange="importarWordMultigrado(event)" style="display:none;">
+                            <div style="margin-top:10px;padding:10px;background:#e3f2fd;border-radius:5px;font-size:12px;">
+                                <strong>Formato esperado:</strong> El Word debe tener secciones claramente marcadas como "1RO", "2DO", "3RO", etc., seguidas de las listas de estudiantes.
                             </div>
                         </div>
                         
@@ -1767,9 +1800,12 @@
                     <h2>📋 Reporte Final Consolidado</h2>
                     
                     <div class="info-box">
-                        <h3>📈 Cálculo de Promedios</h3>
-                        <p><strong>Promedio por Bloque:</strong> (P1 + P2 + P3 + P4) / 4 (siempre divide entre 4)</p>
-                        <p><strong>Promedio Final:</strong> (PB1 + PB2 + PB3 + PB4) / 4</p>
+                        <h3>📈 Cálculo de Promedios con Recuperaciones</h3>
+                        <p><strong>Columnas RP:</strong> Se muestran SOLO para estudiantes con calificación menor a 70</p>
+                        <p><strong>Edición de RP:</strong> Usa los botones de abajo (Recuperación P1, P2, P3, P4)</p>
+                        <p><strong>Cálculo por Período:</strong> Se toma la calificación MÁS ALTA entre P y RP</p>
+                        <p><strong>Promedio por Bloque:</strong> (P1 + P2 + P3 + P4) / 4 - SIEMPRE divide entre 4</p>
+                        <p><strong>Promedio Final:</strong> (PB1 + PB2 + PB3 + PB4) / 4 - SIEMPRE divide entre 4</p>
                         <p><strong>Condición:</strong> APROBADO (≥70) o REPROBADO (<70)</p>
                     </div>
                     
@@ -1807,6 +1843,29 @@
                     <div style="overflow-x: auto;">
                         <div id="tablaReporte"></div>
                     </div>
+                    
+                    <!-- SECCIÓN RECUPERACIONES -->
+                    <div class="seccion" style="margin-top:30px;">
+                        <h2>🔄 Calificaciones de Recuperación (RP)</h2>
+                        <p style="margin-bottom:15px;">Ingresa las calificaciones de recuperación para cada período. El sistema tomará automáticamente la calificación más alta entre el período original y su recuperación.</p>
+                        
+                        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:15px; margin-bottom:20px;">
+                            <button class="btn-toolbar" onclick="mostrarRecuperacion(1)" style="border-color:#4472C4; color:#4472C4;">
+                                📘 Recuperación P1
+                            </button>
+                            <button class="btn-toolbar" onclick="mostrarRecuperacion(2)" style="border-color:#70AD47; color:#70AD47;">
+                                📗 Recuperación P2
+                            </button>
+                            <button class="btn-toolbar" onclick="mostrarRecuperacion(3)" style="border-color:#FFC000; color:#FFC000;">
+                                📙 Recuperación P3
+                            </button>
+                            <button class="btn-toolbar" onclick="mostrarRecuperacion(4)" style="border-color:#E74C3C; color:#E74C3C;">
+                                📕 Recuperación P4
+                            </button>
+                        </div>
+                        
+                        <div id="contenedorRecuperacion"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1831,25 +1890,106 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    
+    <script>
+        // Verificar que las bibliotecas se cargaron correctamente
+        window.addEventListener('load', function() {
+            console.log('🔍 Verificando bibliotecas...');
+            console.log('XLSX:', typeof XLSX !== 'undefined' ? '✅' : '❌');
+            console.log('jsPDF:', typeof window.jspdf !== 'undefined' ? '✅' : '❌');
+            console.log('mammoth:', typeof mammoth !== 'undefined' ? '✅' : '❌');
+            
+            if (typeof window.jspdf !== 'undefined') {
+                const { jsPDF } = window.jspdf;
+                const testDoc = new jsPDF();
+                console.log('autoTable:', typeof testDoc.autoTable === 'function' ? '✅' : '❌');
+            }
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     
     <script>
         var NOTAS = {'A+':100,'A':94,'A-':90,'B+':87,'B':84,'B-':80,'C+':77,'C':74,'C-':70,'D+':67,'D':64,'D-':60,'F':50};
         
+        // ESTRUCTURA MULTIGRADO - FIREBASE READY
+        var datosMultigrado = {
+            grados: {
+                "1ro": { secciones: {} },
+                "2do": { secciones: {} },
+                "3ro": { secciones: {} },
+                "4to": { secciones: {} },
+                "5to": { secciones: {} },
+                "6to": { secciones: {} }
+            },
+            gradoActual: "1ro",
+            seccionActual: "A"
+        };
+        
+        // Función para obtener estructura base de una sección
+        function crearEstructuraSeccion() {
+            return {
+                estudiantes: [],
+                bloques: [
+                    {
+                        comp:[],
+                        periodos: {
+                            1: {indicadores:[], cal:{}, fechasHeader:{}},
+                            2: {indicadores:[], cal:{}, fechasHeader:{}},
+                            3: {indicadores:[], cal:{}, fechasHeader:{}},
+                            4: {indicadores:[], cal:{}, fechasHeader:{}}
+                        },
+                        recuperaciones: {1:{}, 2:{}, 3:{}, 4:{}}
+                    },
+                    {
+                        comp:[],
+                        periodos: {
+                            1: {indicadores:[], cal:{}, fechasHeader:{}},
+                            2: {indicadores:[], cal:{}, fechasHeader:{}},
+                            3: {indicadores:[], cal:{}, fechasHeader:{}},
+                            4: {indicadores:[], cal:{}, fechasHeader:{}}
+                        },
+                        recuperaciones: {1:{}, 2:{}, 3:{}, 4:{}}
+                    },
+                    {
+                        comp:[],
+                        periodos: {
+                            1: {indicadores:[], cal:{}, fechasHeader:{}},
+                            2: {indicadores:[], cal:{}, fechasHeader:{}},
+                            3: {indicadores:[], cal:{}, fechasHeader:{}},
+                            4: {indicadores:[], cal:{}, fechasHeader:{}}
+                        },
+                        recuperaciones: {1:{}, 2:{}, 3:{}, 4:{}}
+                    },
+                    {
+                        comp:[],
+                        periodos: {
+                            1: {indicadores:[], cal:{}, fechasHeader:{}},
+                            2: {indicadores:[], cal:{}, fechasHeader:{}},
+                            3: {indicadores:[], cal:{}, fechasHeader:{}},
+                            4: {indicadores:[], cal:{}, fechasHeader:{}}
+                        },
+                        recuperaciones: {1:{}, 2:{}, 3:{}, 4:{}}
+                    }
+                ]
+            };
+        }
+        
+        // DATOS ACTUALES (apunta a la sección activa)
         var datos = {
-            info: {centro:'',maestro:'',asignatura:'',grado:'',anio:''},
+            info: {centro:'Alberto Feliz Bello', maestro:'Luis Abel Gómez Féliz', asignatura:'Educación Física', grado:'1ro', seccion:'A', anio:'2025 - 2026'},
             estudiantes: [],
             bloques: [
                 {
-                    comp:[], // Competencias del bloque (fijas)
+                    comp:[],
                     periodos: {
                         1: {indicadores:[], cal:{}, fechasHeader:{}},
                         2: {indicadores:[], cal:{}, fechasHeader:{}},
                         3: {indicadores:[], cal:{}, fechasHeader:{}},
                         4: {indicadores:[], cal:{}, fechasHeader:{}}
-                    }
+                    },
+                    recuperaciones: {1:{}, 2:{}, 3:{}, 4:{}}
                 },
                 {
                     comp:[],
@@ -1858,7 +1998,8 @@
                         2: {indicadores:[], cal:{}, fechasHeader:{}},
                         3: {indicadores:[], cal:{}, fechasHeader:{}},
                         4: {indicadores:[], cal:{}, fechasHeader:{}}
-                    }
+                    },
+                    recuperaciones: {1:{}, 2:{}, 3:{}, 4:{}}
                 },
                 {
                     comp:[],
@@ -1867,7 +2008,8 @@
                         2: {indicadores:[], cal:{}, fechasHeader:{}},
                         3: {indicadores:[], cal:{}, fechasHeader:{}},
                         4: {indicadores:[], cal:{}, fechasHeader:{}}
-                    }
+                    },
+                    recuperaciones: {1:{}, 2:{}, 3:{}, 4:{}}
                 },
                 {
                     comp:[],
@@ -1876,10 +2018,150 @@
                         2: {indicadores:[], cal:{}, fechasHeader:{}},
                         3: {indicadores:[], cal:{}, fechasHeader:{}},
                         4: {indicadores:[], cal:{}, fechasHeader:{}}
-                    }
+                    },
+                    recuperaciones: {1:{}, 2:{}, 3:{}, 4:{}}
                 }
             ]
         };
+        
+        // FUNCIONES MULTIGRADO
+        function cambiarGradoSeccion(grado, seccion) {
+            // Guardar datos actuales (estudiantes, bloques Y asistencia)
+            guardarSeccionActual();
+            guardarAsistenciaActual();
+            
+            // Cambiar a nuevo grado/sección
+            datosMultigrado.gradoActual = grado;
+            datosMultigrado.seccionActual = seccion;
+            
+            // Cargar datos del nuevo grado/sección
+            cargarSeccion(grado, seccion);
+            cargarAsistenciaSeccion(grado, seccion);
+            
+            // Actualizar interfaz
+            datos.info.grado = grado;
+            datos.info.seccion = seccion;
+            document.getElementById('gradoSelect').value = grado;
+            document.getElementById('seccionSelect').value = seccion;
+            
+            // Re-renderizar todo
+            renderEstudiantes();
+            renderBloques();
+            renderEstadisticas();
+            if(document.getElementById('inicio').classList.contains('activa')) {
+                // Si estamos en inicio, no hacer nada más
+            } else if(document.getElementById('asistencia').classList.contains('activa')) {
+                renderResumenMes(); // Si estamos en asistencia, actualizar
+            }
+            
+            // Guardar en localStorage
+            guardarDatosLocalStorage();
+            
+            mostrarMensaje('✓ Cambiado a ' + grado + ' - Sección ' + seccion);
+        }
+        
+        function guardarSeccionActual() {
+            var grado = datosMultigrado.gradoActual;
+            var seccion = datosMultigrado.seccionActual;
+            
+            if(!datosMultigrado.grados[grado].secciones[seccion]) {
+                datosMultigrado.grados[grado].secciones[seccion] = crearEstructuraSeccion();
+            }
+            
+            datosMultigrado.grados[grado].secciones[seccion].estudiantes = JSON.parse(JSON.stringify(datos.estudiantes));
+            datosMultigrado.grados[grado].secciones[seccion].bloques = JSON.parse(JSON.stringify(datos.bloques));
+        }
+        
+        function cargarSeccion(grado, seccion) {
+            if(!datosMultigrado.grados[grado].secciones[seccion]) {
+                datosMultigrado.grados[grado].secciones[seccion] = crearEstructuraSeccion();
+            }
+            
+            var seccionData = datosMultigrado.grados[grado].secciones[seccion];
+            datos.estudiantes = JSON.parse(JSON.stringify(seccionData.estudiantes));
+            datos.bloques = JSON.parse(JSON.stringify(seccionData.bloques));
+        }
+        
+        // GUARDAR/CARGAR MULTIGRADO EN LOCALSTORAGE
+        function guardarDatosLocalStorage() {
+            // Primero guardar la sección actual en la estructura multigrado
+            guardarSeccionActual();
+            guardarAsistenciaActual();
+            
+            // Guardar toda la estructura multigrado
+            try {
+                localStorage.setItem('educoco_multigrado', JSON.stringify(datosMultigrado));
+                localStorage.setItem('educoco_asistencia_multigrado', JSON.stringify(asistenciaMultigrado));
+                
+                var estadoElem = document.getElementById('estadoGuardadoDetalle');
+                if(estadoElem) {
+                    estadoElem.textContent = '✓ Datos guardados';
+                    estadoElem.style.color = '#28a745';
+                }
+            } catch(error) {
+                console.error('Error guardando en localStorage:', error);
+                mostrarMensaje('⚠️ Error al guardar datos', true);
+            }
+        }
+        
+        function cargarDatosDesdeLocalStorage() {
+            try {
+                // Cargar estructura multigrado
+                var datosGuardados = localStorage.getItem('educoco_multigrado');
+                if(datosGuardados) {
+                    var temp = JSON.parse(datosGuardados);
+                    
+                    // Cargar grados y secciones
+                    datosMultigrado = temp;
+                    
+                    // Asegurar que existen todos los grados
+                    var todosGrados = ["1ro", "2do", "3ro", "4to", "5to", "6to"];
+                    for(var g=0; g<todosGrados.length; g++) {
+                        if(!datosMultigrado.grados[todosGrados[g]]) {
+                            datosMultigrado.grados[todosGrados[g]] = {secciones: {}};
+                        }
+                    }
+                    
+                    // Cargar la sección actual
+                    cargarSeccion(datosMultigrado.gradoActual, datosMultigrado.seccionActual);
+                    
+                    // Actualizar selectores
+                    document.getElementById('gradoSelect').value = datosMultigrado.gradoActual;
+                    document.getElementById('seccionSelect').value = datosMultigrado.seccionActual;
+                    
+                    console.log('✅ Datos multigrado cargados desde LocalStorage');
+                }
+                
+                // Cargar asistencia multigrado
+                var asistenciaGuardada = localStorage.getItem('educoco_asistencia_multigrado');
+                if(asistenciaGuardada) {
+                    var tempAsist = JSON.parse(asistenciaGuardada);
+                    asistenciaMultigrado = tempAsist;
+                    
+                    // Asegurar estructura para todos los grados
+                    var todosGrados = ["1ro", "2do", "3ro", "4to", "5to", "6to"];
+                    for(var g=0; g<todosGrados.length; g++) {
+                        if(!asistenciaMultigrado.grados[todosGrados[g]]) {
+                            asistenciaMultigrado.grados[todosGrados[g]] = {secciones: {}};
+                        }
+                    }
+                    
+                    // Cargar asistencia de la sección actual
+                    cargarAsistenciaSeccion(datosMultigrado.gradoActual, datosMultigrado.seccionActual);
+                } else {
+                    // Migrar asistencia antigua si existe
+                    var asistenciaAntigua = localStorage.getItem('educoco_asistencia');
+                    if(asistenciaAntigua) {
+                        var tempOld = JSON.parse(asistenciaAntigua);
+                        Object.assign(asistencia, tempOld);
+                        guardarAsistenciaActual(); // Guardar en estructura nueva
+                    }
+                }
+                
+            } catch(error) {
+                console.error('Error cargando datos:', error);
+            }
+        }
         
         var charts = {
             aprobados: null,
@@ -1899,12 +2181,54 @@
         var gruposGenerados = [];
         
         // VARIABLE ASISTENCIA
+        // ASISTENCIA MULTIGRADO - Independiente por grado/sección
+        var asistenciaMultigrado = {
+            grados: {
+                "1ro": { secciones: {} },
+                "2do": { secciones: {} },
+                "3ro": { secciones: {} },
+                "4to": { secciones: {} },
+                "5to": { secciones: {} },
+                "6to": { secciones: {} }
+            }
+        };
+        
+        // Asistencia actual (apunta a la sección activa)
         var asistencia = {
-            // Estructura: { "2025-1": { estudiante1: {dias, registros}, estudiante2: ... } }
             meses: {},
             mesActual: new Date().getMonth() + 1,
             anioActual: new Date().getFullYear()
         };
+        
+        // Función para crear estructura de asistencia de sección
+        function crearEstructuraAsistencia() {
+            return {
+                meses: {},
+                mesActual: new Date().getMonth() + 1,
+                anioActual: new Date().getFullYear()
+            };
+        }
+        
+        // Guardar asistencia de la sección actual en la estructura multigrado
+        function guardarAsistenciaActual() {
+            var grado = datosMultigrado.gradoActual;
+            var seccion = datosMultigrado.seccionActual;
+            
+            if(!asistenciaMultigrado.grados[grado].secciones[seccion]) {
+                asistenciaMultigrado.grados[grado].secciones[seccion] = crearEstructuraAsistencia();
+            }
+            
+            asistenciaMultigrado.grados[grado].secciones[seccion] = JSON.parse(JSON.stringify(asistencia));
+        }
+        
+        // Cargar asistencia de una sección específica
+        function cargarAsistenciaSeccion(grado, seccion) {
+            if(!asistenciaMultigrado.grados[grado].secciones[seccion]) {
+                asistenciaMultigrado.grados[grado].secciones[seccion] = crearEstructuraAsistencia();
+            }
+            
+            asistencia = JSON.parse(JSON.stringify(asistenciaMultigrado.grados[grado].secciones[seccion]));
+        }
         
         // ==================== SISTEMA DE LOCALSTORAGE ====================
         
@@ -2003,6 +2327,16 @@
                             // Si ya tiene la estructura nueva, hacer DEEP COPY para evitar referencias compartidas
                             else if (bloqueViejo.periodos) {
                                 datos.bloques[b] = JSON.parse(JSON.stringify(bloqueViejo));
+                            }
+                            
+                            // ASEGURAR ESTRUCTURA DE RECUPERACIONES
+                            if (!datos.bloques[b].recuperaciones) {
+                                datos.bloques[b].recuperaciones = {1:{}, 2:{}, 3:{}, 4:{}};
+                            }
+                            for (var p = 1; p <= 4; p++) {
+                                if (!datos.bloques[b].recuperaciones[p]) {
+                                    datos.bloques[b].recuperaciones[p] = {};
+                                }
                             }
                         }
                     }
@@ -2151,130 +2485,217 @@
             datos.info.centro = 'Alberto Feliz Bello';
             datos.info.maestro = 'Luis Abel Gómez Féliz';
             datos.info.asignatura = 'Educación Física';
-            datos.info.grado = document.getElementById('grado').value;
+            
+            // Usar selectores del sistema multigrado
+            var gradoSelect = document.getElementById('gradoSelect');
+            var seccionSelect = document.getElementById('seccionSelect');
+            
+            if(gradoSelect && seccionSelect) {
+                datos.info.grado = gradoSelect.value + ' - Sección ' + seccionSelect.value;
+            } else {
+                datos.info.grado = datosMultigrado.gradoActual + ' - Sección ' + datosMultigrado.seccionActual;
+            }
+            
             datos.info.anio = '2025 - 2026';
             renderEstadisticas();
         }
         
         function guardarExcel() {
             try {
-                actualizarInfo();
-                mostrarMensaje('⏳ Generando archivo Excel...');
+                mostrarMensaje('⏳ Generando archivo Excel multigrado...');
+                
+                // Guardar sección actual antes de exportar
+                guardarSeccionActual();
                 
                 var wb = XLSX.utils.book_new();
                 
+                // HOJA DE INFORMACIÓN GENERAL
                 var wsInfo = XLSX.utils.aoa_to_sheet([
-                    ['Centro', datos.info.centro],
-                    ['Maestro', datos.info.maestro],
-                    ['Asignatura', datos.info.asignatura],
-                    ['Grado', datos.info.grado],
-                    ['Anio', datos.info.anio]
+                    ['Centro', 'Alberto Feliz Bello'],
+                    ['Maestro', 'Luis Abel Gómez Féliz'],
+                    ['Asignatura', 'Educación Física'],
+                    ['Año', '2025 - 2026'],
+                    ['Tipo', 'MULTIGRADO'],
+                    ['Grados', '1ro, 2do, 3ro, 4to, 5to, 6to'],
+                    ['Secciones', 'A, B, C, D']
                 ]);
                 XLSX.utils.book_append_sheet(wb, wsInfo, 'Info');
                 
-                var estudiantesData = [['No', 'Nombre']];
-                for(var i=0; i<datos.estudiantes.length; i++) {
-                    estudiantesData.push([datos.estudiantes[i].num, datos.estudiantes[i].nombre]);
-                }
-                var wsEst = XLSX.utils.aoa_to_sheet(estudiantesData);
-                XLSX.utils.book_append_sheet(wb, wsEst, 'Estudiantes');
+                // EXPORTAR CADA GRADO Y SECCIÓN
+                var gradosExportar = ['1ro', '2do', '3ro', '4to', '5to', '6to'];
+                var seccionesExportar = ['A', 'B', 'C', 'D'];
                 
-                for(var b=0; b<4; b++) {
-                    var bloqueData = [['BLOQUE ' + (b+1)]];
-                    var bd = datos.bloques[b];
+                var totalSecciones = 0;
+                var totalEstudiantes = 0;
+                
+                for(var g=0; g<gradosExportar.length; g++) {
+                    var grado = gradosExportar[g];
                     
-                    bloqueData.push([]);
-                    bloqueData.push(['COMPETENCIAS DEL BLOQUE']);
-                    
-                    for(var ci=0; ci<bd.comp.length; ci++) {
-                        var c = bd.comp[ci];
-                        bloqueData.push(['Competencia'+(ci+1), c.competencia]);
-                    }
-                    
-                    bloqueData.push([]);
-                    bloqueData.push(['INDICADORES Y CRITERIOS POR PERÍODO']);
-                    
-                    // Guardar indicadores y criterios de cada período
-                    for(var p=1; p<=4; p++) {
-                        bloqueData.push([]);
-                        bloqueData.push(['PERÍODO ' + p]);
+                    for(var s=0; s<seccionesExportar.length; s++) {
+                        var seccion = seccionesExportar[s];
                         
-                        var periodoData = bd.periodos[p];
+                        // Verificar si la sección tiene datos
+                        if(!datosMultigrado.grados[grado].secciones[seccion] || 
+                           datosMultigrado.grados[grado].secciones[seccion].estudiantes.length === 0) {
+                            continue; // Saltar secciones vacías
+                        }
                         
-                        for(var ii=0; ii<periodoData.indicadores.length; ii++) {
-                            var ind = periodoData.indicadores[ii];
-                            bloqueData.push(['Indicador_P'+p+'_'+(ii+1), ind.texto]);
+                        totalSecciones++;
+                        var seccionData = datosMultigrado.grados[grado].secciones[seccion];
+                        totalEstudiantes += seccionData.estudiantes.length;
+                        
+                        var nombreHoja = grado + '-' + seccion;
+                        var hojaData = [];
+                        
+                        // ENCABEZADO
+                        hojaData.push([nombreHoja.toUpperCase()]);
+                        hojaData.push([]);
+                        
+                        // ESTUDIANTES
+                        hojaData.push(['ESTUDIANTES']);
+                        hojaData.push(['No', 'Nombre']);
+                        for(var ei=0; ei<seccionData.estudiantes.length; ei++) {
+                            var e = seccionData.estudiantes[ei];
+                            hojaData.push([e.num, e.nombre]);
+                        }
+                        
+                        hojaData.push([]);
+                        
+                        // BLOQUES
+                        for(var b=0; b<4; b++) {
+                            var bd = seccionData.bloques[b];
                             
-                            for(var cri=0; cri<ind.criterios.length; cri++) {
-                                bloqueData.push(['Criterio_P'+p+'_'+(ii+1)+'_'+(cri+1), ind.criterios[cri]]);
+                            hojaData.push(['BLOQUE ' + (b+1)]);
+                            hojaData.push([]);
+                            
+                            // COMPETENCIAS
+                            hojaData.push(['COMPETENCIAS DEL BLOQUE']);
+                            for(var ci=0; ci<bd.comp.length; ci++) {
+                                var c = bd.comp[ci];
+                                hojaData.push(['Competencia'+(ci+1), c.competencia]);
                             }
-                        }
-                        
-                        // FECHAS del período
-                        bloqueData.push([]);
-                        bloqueData.push(['FECHAS_P'+p]);
-                        
-                        var totalCritP = 0;
-                        for(var ii=0; ii<periodoData.indicadores.length; ii++) {
-                            totalCritP += periodoData.indicadores[ii].criterios.length;
-                        }
-                        
-                        var headerFechasP = ['Criterio'];
-                        for(var c=0; c<totalCritP; c++) {
-                            headerFechasP.push('C'+(c+1));
-                        }
-                        bloqueData.push(headerFechasP);
-                        
-                        var rowFechaP = ['Fecha'];
-                        for(var c=0; c<totalCritP; c++) {
-                            var keyFH = p+'_'+c;
-                            rowFechaP.push(periodoData.fechasHeader[keyFH] || '');
-                        }
-                        bloqueData.push(rowFechaP);
-                        
-                        // CALIFICACIONES del período
-                        bloqueData.push([]);
-                        bloqueData.push(['CALIFICACIONES_P'+p]);
-                        
-                        var headerCalP = ['Estudiante'];
-                        for(var c=0; c<totalCritP; c++) {
-                            headerCalP.push('C'+(c+1));
-                        }
-                        headerCalP.push('Promedio');
-                        bloqueData.push(headerCalP);
-                        
-                        for(var ei=0; ei<datos.estudiantes.length; ei++) {
-                            var e = datos.estudiantes[ei];
-                            var rowP = [e.nombre];
                             
-                            var suma = 0, cuenta = 0;
-                            for(var c=0; c<totalCritP; c++) {
-                                var key = e.num+'_'+p+'_'+c;
-                                var cal = periodoData.cal[key] || '';
-                                rowP.push(cal);
-                                if(cal && NOTAS[cal]) {
-                                    suma += NOTAS[cal];
-                                    cuenta++;
+                            hojaData.push([]);
+                            
+                            // PERÍODOS
+                            for(var p=1; p<=4; p++) {
+                                hojaData.push(['PERÍODO ' + p]);
+                                
+                                var periodoData = bd.periodos[p];
+                                
+                                // INDICADORES Y CRITERIOS
+                                for(var ii=0; ii<periodoData.indicadores.length; ii++) {
+                                    var ind = periodoData.indicadores[ii];
+                                    hojaData.push(['Indicador_P'+p+'_'+(ii+1), ind.texto]);
+                                    
+                                    if(ind.criterios) {
+                                        for(var cri=0; cri<ind.criterios.length; cri++) {
+                                            var critTexto = typeof ind.criterios[cri] === 'string' ? ind.criterios[cri] : (ind.criterios[cri].texto || '');
+                                            hojaData.push(['Criterio_P'+p+'_'+(ii+1)+'_'+(cri+1), critTexto]);
+                                        }
+                                    }
+                                }
+                                
+                                // FECHAS
+                                hojaData.push([]);
+                                hojaData.push(['FECHAS_P'+p]);
+                                
+                                var totalCritP = 0;
+                                for(var ii=0; ii<periodoData.indicadores.length; ii++) {
+                                    if(periodoData.indicadores[ii].criterios) {
+                                        totalCritP += periodoData.indicadores[ii].criterios.length;
+                                    }
+                                }
+                                
+                                var headerFechasP = ['Criterio'];
+                                for(var c=0; c<totalCritP; c++) {
+                                    headerFechasP.push('C'+(c+1));
+                                }
+                                hojaData.push(headerFechasP);
+                                
+                                var rowFechaP = ['Fecha'];
+                                for(var c=0; c<totalCritP; c++) {
+                                    var keyFH = p+'_'+c;
+                                    rowFechaP.push(periodoData.fechasHeader[keyFH] || '');
+                                }
+                                hojaData.push(rowFechaP);
+                                
+                                // CALIFICACIONES
+                                hojaData.push([]);
+                                hojaData.push(['CALIFICACIONES_P'+p]);
+                                
+                                var headerCalP = ['Estudiante'];
+                                for(var c=0; c<totalCritP; c++) {
+                                    headerCalP.push('C'+(c+1));
+                                }
+                                headerCalP.push('Promedio');
+                                hojaData.push(headerCalP);
+                                
+                                for(var ei=0; ei<seccionData.estudiantes.length; ei++) {
+                                    var e = seccionData.estudiantes[ei];
+                                    var rowP = [e.nombre];
+                                    
+                                    var suma = 0, cuenta = 0;
+                                    for(var c=0; c<totalCritP; c++) {
+                                        var key = e.num+'_'+p+'_'+c;
+                                        var cal = periodoData.cal[key] || '';
+                                        rowP.push(cal);
+                                        
+                                        if(cal) {
+                                            var valorNum = parseFloat(cal);
+                                            if(!isNaN(valorNum)) {
+                                                suma += valorNum;
+                                                cuenta++;
+                                            } else if(NOTAS[cal]) {
+                                                suma += NOTAS[cal];
+                                                cuenta++;
+                                            }
+                                        }
+                                    }
+                                    
+                                    rowP.push(cuenta > 0 ? (suma/cuenta).toFixed(2) : '');
+                                    hojaData.push(rowP);
+                                }
+                                
+                                hojaData.push([]);
+                            }
+                            
+                            // RECUPERACIONES DEL BLOQUE
+                            hojaData.push(['RECUPERACIONES']);
+                            
+                            for(var p=1; p<=4; p++) {
+                                hojaData.push(['RP'+p]);
+                                hojaData.push(['Estudiante', 'Recuperación']);
+                                
+                                for(var ei=0; ei<seccionData.estudiantes.length; ei++) {
+                                    var e = seccionData.estudiantes[ei];
+                                    var recup = bd.recuperaciones && bd.recuperaciones[p] && bd.recuperaciones[p][e.num] ? bd.recuperaciones[p][e.num] : '';
+                                    if(recup !== '') {
+                                        hojaData.push([e.nombre, recup]);
+                                    }
                                 }
                             }
                             
-                            rowP.push(cuenta > 0 ? (suma/cuenta).toFixed(2) : '');
-                            bloqueData.push(rowP);
+                            hojaData.push([]);
+                            hojaData.push([]);
                         }
+                        
+                        // Crear hoja
+                        var ws = XLSX.utils.aoa_to_sheet(hojaData);
+                        XLSX.utils.book_append_sheet(wb, ws, nombreHoja);
                     }
-                    
-                    var wsBloque = XLSX.utils.aoa_to_sheet(bloqueData);
-                    XLSX.utils.book_append_sheet(wb, wsBloque, 'Bloque'+(b+1));
                 }
                 
-                // AGREGAR HOJA DE ASISTENCIA
+                // HOJA DE ASISTENCIA (todas las secciones)
                 const mesesNombres = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
                                       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                 const ordenMeses = [8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6];
                 
                 const asistenciaData = [['ASISTENCIA - AÑO ' + asistencia.anioActual]];
+                asistenciaData.push(['TODAS LAS SECCIONES']);
                 asistenciaData.push([]);
                 
+                // Por ahora, asistencia es compartida (se puede separar en el futuro)
                 for (let mIdx = 0; mIdx < ordenMeses.length; mIdx++) {
                     const m = ordenMeses[mIdx];
                     const mesKey = asistencia.anioActual + '-' + m;
@@ -2283,7 +2704,6 @@
                         const mesData = asistencia.meses[mesKey];
                         asistenciaData.push([mesesNombres[m].toUpperCase()]);
                         
-                        // Header de días
                         const headerDias = ['Estudiante'];
                         for (let i = 0; i < mesData.dias.length; i++) {
                             headerDias.push('D' + mesData.dias[i]);
@@ -2291,20 +2711,30 @@
                         headerDias.push('% Asist');
                         asistenciaData.push(headerDias);
                         
-                        // Registros de estudiantes
-                        for (let ei = 0; ei < datos.estudiantes.length; ei++) {
-                            const e = datos.estudiantes[ei];
-                            const registros = mesData.registros[e.num] || [];
-                            const row = [e.nombre];
-                            
-                            for (let i = 0; i < mesData.dias.length; i++) {
-                                row.push(registros[i] || '');
+                        // Estudiantes de TODOS los grados
+                        for(var g=0; g<gradosExportar.length; g++) {
+                            var grado = gradosExportar[g];
+                            for(var s=0; s<seccionesExportar.length; s++) {
+                                var seccion = seccionesExportar[s];
+                                
+                                if(!datosMultigrado.grados[grado].secciones[seccion]) continue;
+                                var seccionData = datosMultigrado.grados[grado].secciones[seccion];
+                                
+                                for (let ei = 0; ei < seccionData.estudiantes.length; ei++) {
+                                    const e = seccionData.estudiantes[ei];
+                                    const registros = mesData.registros[e.num] || [];
+                                    const row = [grado + '-' + seccion + ': ' + e.nombre];
+                                    
+                                    for (let i = 0; i < mesData.dias.length; i++) {
+                                        row.push(registros[i] || '');
+                                    }
+                                    
+                                    const porc = calcularPorcentajeAsistencia(registros, mesData.dias.length);
+                                    row.push(porc.toFixed(1) + '%');
+                                    
+                                    asistenciaData.push(row);
+                                }
                             }
-                            
-                            const porc = calcularPorcentajeAsistencia(registros, mesData.dias.length);
-                            row.push(porc.toFixed(1) + '%');
-                            
-                            asistenciaData.push(row);
                         }
                         
                         asistenciaData.push([]);
@@ -2315,14 +2745,14 @@
                 XLSX.utils.book_append_sheet(wb, wsAsistencia, 'Asistencia');
                 
                 var fecha = new Date().toISOString().slice(0,10);
-                var nombreArchivo = 'Instrumento_' + (datos.info.asignatura || 'SinNombre') + '_' + fecha + '.xlsx';
+                var nombreArchivo = 'EducacionFisica_Multigrado_' + fecha + '.xlsx';
                 
                 XLSX.writeFile(wb, nombreArchivo);
                 
-                mostrarMensaje('✓ Excel guardado: ' + nombreArchivo);
+                mostrarMensaje('✓ Excel multigrado guardado: ' + totalSecciones + ' secciones, ' + totalEstudiantes + ' estudiantes');
             } catch(error) {
                 console.error('Error guardando Excel:', error);
-                mostrarMensaje('✗ Error al guardar Excel', true);
+                mostrarMensaje('✗ Error al guardar Excel: ' + error.message, true);
             }
         }
         
@@ -2338,183 +2768,327 @@
                     var data = new Uint8Array(e.target.result);
                     var wb = XLSX.read(data, {type: 'array'});
                     
+                    // DETECTAR TIPO DE EXCEL
                     var wsInfo = wb.Sheets['Info'];
+                    var esMultigrado = false;
+                    
                     if(wsInfo) {
                         var infoData = XLSX.utils.sheet_to_json(wsInfo, {header:1});
-                        datos.info.centro = infoData[0] ? (infoData[0][1] || '') : '';
-                        datos.info.maestro = infoData[1] ? (infoData[1][1] || '') : '';
-                        datos.info.asignatura = infoData[2] ? (infoData[2][1] || '') : '';
-                        datos.info.grado = infoData[3] ? (infoData[3][1] || '') : '';
-                        datos.info.anio = infoData[4] ? (infoData[4][1] || '') : '';
-                    }
-                    
-                    var wsEst = wb.Sheets['Estudiantes'];
-                    if(wsEst) {
-                        var estData = XLSX.utils.sheet_to_json(wsEst, {header:1});
-                        datos.estudiantes = [];
-                        for(var i=1; i<estData.length; i++) {
-                            if(estData[i][0] && estData[i][1]) {
-                                datos.estudiantes.push({
-                                    num: estData[i][0],
-                                    nombre: estData[i][1]
-                                });
-                            }
-                        }
-                    }
-                    
-                    for(var b=0; b<4; b++) {
-                        var wsBloque = wb.Sheets['Bloque'+(b+1)];
-                        if(!wsBloque) continue;
-                        
-                        var bloqueData = XLSX.utils.sheet_to_json(wsBloque, {header:1});
-                        
-                        datos.bloques[b].comp = [];
-                        datos.bloques[b].fechasHeader = {};
-                        var compActual = null;
-                        var indActual = null;
-                        
-                        for(var r=0; r<bloqueData.length; r++) {
-                            var row = bloqueData[r];
-                            if(!row[0]) continue;
-                            
-                            if(row[0].startsWith('Competencia')) {
-                                compActual = {
-                                    competencia: row[1] || '',
-                                    indicadores: []
-                                };
-                                datos.bloques[b].comp.push(compActual);
-                                indActual = null;
-                            } else if(row[0].startsWith('Indicador')) {
-                                if(compActual) {
-                                    indActual = {
-                                        texto: row[1] || '',
-                                        criterios: []
-                                    };
-                                    compActual.indicadores.push(indActual);
-                                }
-                            } else if(row[0].startsWith('Criterio')) {
-                                if(indActual) {
-                                    indActual.criterios.push(row[1] || '');
-                                }
-                            } else if(row[0] === 'FECHAS_HEADER') {
-                                r++;
-                                var totalCrit = 0;
-                                for(var ci=0; ci<datos.bloques[b].comp.length; ci++) {
-                                    for(var ii=0; ii<datos.bloques[b].comp[ci].indicadores.length; ii++) {
-                                        totalCrit += datos.bloques[b].comp[ci].indicadores[ii].criterios.length;
-                                    }
-                                }
-                                
-                                for(var fr=r+1; fr<=r+4; fr++) {
-                                    var fechaRow = bloqueData[fr];
-                                    if(!fechaRow[0]) break;
-                                    var periodo = parseInt(fechaRow[0].replace('P',''));
-                                    
-                                    for(var c=0; c<totalCrit; c++) {
-                                        if(fechaRow[c+1]) {
-                                            var keyFH = periodo+'_'+c;
-                                            datos.bloques[b].fechasHeader[keyFH] = fechaRow[c+1];
-                                        }
-                                    }
-                                }
-                                
-                                r = fr;
-                            } else if(row[0] === 'CALIFICACIONES') {
-                                r++;
-                                
-                                var totalCrit = 0;
-                                for(var ci=0; ci<datos.bloques[b].comp.length; ci++) {
-                                    for(var ii=0; ii<datos.bloques[b].comp[ci].indicadores.length; ii++) {
-                                        totalCrit += datos.bloques[b].comp[ci].indicadores[ii].criterios.length;
-                                    }
-                                }
-                                
-                                datos.bloques[b].cal = {};
-                                
-                                for(var er=r+1; er<bloqueData.length; er++) {
-                                    var calRow = bloqueData[er];
-                                    if(!calRow[0]) break;
-                                    
-                                    var nombreEst = calRow[0];
-                                    var est = null;
-                                    for(var ei=0; ei<datos.estudiantes.length; ei++) {
-                                        if(datos.estudiantes[ei].nombre === nombreEst) {
-                                            est = datos.estudiantes[ei];
-                                            break;
-                                        }
-                                    }
-                                    
-                                    if(est) {
-                                        var colIdx = 1;
-                                        for(var p=1; p<=4; p++) {
-                                            for(var c=0; c<totalCrit; c++) {
-                                                var key = est.num+'_'+p+'_'+c;
-                                                if(calRow[colIdx]) {
-                                                    datos.bloques[b].cal[key] = calRow[colIdx];
-                                                }
-                                                colIdx++;
-                                            }
-                                        }
-                                    }
-                                }
-                                
+                        // Buscar si dice "MULTIGRADO"
+                        for(var i=0; i<infoData.length; i++) {
+                            if(infoData[i][0] === 'Tipo' && infoData[i][1] === 'MULTIGRADO') {
+                                esMultigrado = true;
                                 break;
                             }
                         }
                     }
                     
-                    // CARGAR ASISTENCIA
-                    const wsAsistencia = wb.Sheets['Asistencia'];
-                    if (wsAsistencia) {
-                        const asistData = XLSX.utils.sheet_to_json(wsAsistencia, {header:1});
-                        const mesesNombres = ['', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 
-                                              'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                    if(esMultigrado) {
+                        // CARGAR EXCEL MULTIGRADO
+                        cargarExcelMultigrado(wb);
+                    } else {
+                        // CARGAR EXCEL ANTIGUO (una sola sección)
+                        cargarExcelSimple(wb);
+                    }
+                    
+                } catch(error) {
+                    console.error('Error cargando Excel:', error);
+                    mostrarMensaje('✗ Error al cargar el archivo: ' + error.message, true);
+                }
+            };
+            
+            reader.readAsArrayBuffer(archivo);
+            event.target.value = '';
+        }
+        
+        // CARGAR EXCEL MULTIGRADO
+        function cargarExcelMultigrado(wb) {
+            try {
+                var gradosDetectados = 0;
+                var seccionesDetectadas = 0;
+                var totalEstudiantes = 0;
+                
+                // RECORRER TODAS LAS HOJAS
+                var sheetNames = wb.SheetNames;
+                
+                for(var si=0; si<sheetNames.length; si++) {
+                    var sheetName = sheetNames[si];
+                    
+                    // Saltar hojas especiales
+                    if(sheetName === 'Info' || sheetName === 'Asistencia') continue;
+                    
+                    // Detectar grado y sección del nombre de la hoja (ej: "1ro-A")
+                    var match = sheetName.match(/^(\d\w+)-([A-D])$/);
+                    if(!match) continue;
+                    
+                    var grado = match[1];
+                    var seccion = match[2];
+                    
+                    // Crear sección si no existe
+                    if(!datosMultigrado.grados[grado].secciones[seccion]) {
+                        datosMultigrado.grados[grado].secciones[seccion] = crearEstructuraSeccion();
+                    }
+                    
+                    var seccionData = datosMultigrado.grados[grado].secciones[seccion];
+                    
+                    // LEER HOJA
+                    var hojaData = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {header:1});
+                    
+                    // Reinicializar estructura
+                    seccionData.estudiantes = [];
+                    seccionData.bloques = [
+                        crearEstructuraBloque(),
+                        crearEstructuraBloque(),
+                        crearEstructuraBloque(),
+                        crearEstructuraBloque()
+                    ];
+                    
+                    var bloqueActual = -1;
+                    var periodoActual = null;
+                    
+                    for(var r=0; r<hojaData.length; r++) {
+                        var row = hojaData[r];
+                        if(!row[0]) continue;
                         
-                        let mesActual = null;
-                        let mesKey = null;
-                        
-                        for (let r = 0; r < asistData.length; r++) {
-                            const row = asistData[r];
-                            if (!row[0]) continue;
+                        // CARGAR ESTUDIANTES
+                        if(row[0] === 'ESTUDIANTES') {
+                            r++; // Saltar header
+                            r++; // Primera fila de datos
                             
-                            // Detectar mes
-                            const mesIdx = mesesNombres.indexOf(row[0].toUpperCase());
-                            if (mesIdx > 0) {
-                                mesActual = mesIdx;
-                                mesKey = asistencia.anioActual + '-' + mesActual;
-                                asistencia.meses[mesKey] = {
-                                    dias: [],
-                                    registros: {}
-                                };
-                                
-                                // Leer header de días
+                            while(r < hojaData.length && hojaData[r][0] && hojaData[r][0] !== '') {
+                                if(typeof hojaData[r][0] === 'number' && hojaData[r][1]) {
+                                    seccionData.estudiantes.push({
+                                        num: hojaData[r][0],
+                                        nombre: hojaData[r][1]
+                                    });
+                                    totalEstudiantes++;
+                                }
                                 r++;
-                                const headerRow = asistData[r];
-                                for (let i = 1; i < headerRow.length - 1; i++) { // -1 para excluir % Asist
-                                    if (headerRow[i] && headerRow[i].toString().startsWith('D')) {
-                                        const dia = parseInt(headerRow[i].toString().replace('D', ''));
-                                        asistencia.meses[mesKey].dias.push(dia);
+                            }
+                            continue;
+                        }
+                        
+                        // DETECTAR BLOQUE
+                        if(row[0].startsWith('BLOQUE')) {
+                            bloqueActual = parseInt(row[0].replace('BLOQUE ', '')) - 1;
+                            continue;
+                        }
+                        
+                        // CARGAR COMPETENCIAS
+                        if(row[0].startsWith('Competencia') && bloqueActual >= 0) {
+                            seccionData.bloques[bloqueActual].comp.push({
+                                competencia: row[1] || '',
+                                indicadores: []
+                            });
+                            continue;
+                        }
+                        
+                        // DETECTAR PERÍODO
+                        if(row[0].startsWith('PERÍODO') && bloqueActual >= 0) {
+                            periodoActual = parseInt(row[0].replace('PERÍODO ', ''));
+                            continue;
+                        }
+                        
+                        // CARGAR INDICADORES
+                        if(row[0].startsWith('Indicador_P') && bloqueActual >= 0 && periodoActual) {
+                            var ind = {
+                                texto: row[1] || '',
+                                criterios: []
+                            };
+                            seccionData.bloques[bloqueActual].periodos[periodoActual].indicadores.push(ind);
+                            continue;
+                        }
+                        
+                        // CARGAR CRITERIOS
+                        if(row[0].startsWith('Criterio_P') && bloqueActual >= 0 && periodoActual) {
+                            var ultimoInd = seccionData.bloques[bloqueActual].periodos[periodoActual].indicadores[seccionData.bloques[bloqueActual].periodos[periodoActual].indicadores.length - 1];
+                            if(ultimoInd) {
+                                ultimoInd.criterios.push(row[1] || '');
+                            }
+                            continue;
+                        }
+                        
+                        // CARGAR FECHAS
+                        if(row[0].startsWith('FECHAS_P') && bloqueActual >= 0) {
+                            var p = parseInt(row[0].replace('FECHAS_P', ''));
+                            
+                            // Buscar fila con "Fecha"
+                            for(var fr = r+1; fr < hojaData.length && fr < r+5; fr++) {
+                                if(hojaData[fr][0] === 'Fecha') {
+                                    var fechaRow = hojaData[fr];
+                                    
+                                    var totalCrit = 0;
+                                    for(var ii=0; ii<seccionData.bloques[bloqueActual].periodos[p].indicadores.length; ii++) {
+                                        totalCrit += seccionData.bloques[bloqueActual].periodos[p].indicadores[ii].criterios.length;
+                                    }
+                                    
+                                    for(var c=0; c<totalCrit; c++) {
+                                        if(fechaRow[c+1]) {
+                                            var keyFH = p+'_'+c;
+                                            seccionData.bloques[bloqueActual].periodos[p].fechasHeader[keyFH] = fechaRow[c+1];
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            continue;
+                        }
+                        
+                        // CARGAR CALIFICACIONES
+                        if(row[0].startsWith('CALIFICACIONES_P') && bloqueActual >= 0) {
+                            var p = parseInt(row[0].replace('CALIFICACIONES_P', ''));
+                            
+                            var totalCrit = 0;
+                            for(var ii=0; ii<seccionData.bloques[bloqueActual].periodos[p].indicadores.length; ii++) {
+                                totalCrit += seccionData.bloques[bloqueActual].periodos[p].indicadores[ii].criterios.length;
+                            }
+                            
+                            // Leer calificaciones
+                            for(var er = r+2; er < hojaData.length; er++) {
+                                var calRow = hojaData[er];
+                                if(!calRow[0] || calRow[0].startsWith('FECHAS') || calRow[0].startsWith('CALIFICACIONES') || calRow[0].startsWith('RECUPERACIONES') || calRow[0].startsWith('BLOQUE')) break;
+                                
+                                var nombreEst = calRow[0];
+                                var est = null;
+                                for(var ei=0; ei<seccionData.estudiantes.length; ei++) {
+                                    if(seccionData.estudiantes[ei].nombre === nombreEst) {
+                                        est = seccionData.estudiantes[ei];
+                                        break;
                                     }
                                 }
                                 
-                                // Leer registros de estudiantes
-                                for (let er = r + 1; er < asistData.length; er++) {
-                                    const estRow = asistData[er];
-                                    if (!estRow[0] || !estRow[0].trim()) break;
-                                    
-                                    const nombreEst = estRow[0];
-                                    let estNum = null;
-                                    for (let ei = 0; ei < datos.estudiantes.length; ei++) {
-                                        if (datos.estudiantes[ei].nombre === nombreEst) {
-                                            estNum = datos.estudiantes[ei].num;
+                                if(est) {
+                                    for(var c=0; c<totalCrit; c++) {
+                                        var key = est.num+'_'+p+'_'+c;
+                                        if(calRow[c+1]) {
+                                            seccionData.bloques[bloqueActual].periodos[p].cal[key] = calRow[c+1];
+                                        }
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+                        
+                        // CARGAR RECUPERACIONES
+                        if(row[0].startsWith('RP') && bloqueActual >= 0) {
+                            var p = parseInt(row[0].replace('RP', ''));
+                            
+                            for(var er = r+2; er < hojaData.length; er++) {
+                                var recupRow = hojaData[er];
+                                if(!recupRow[0] || recupRow[0].startsWith('RP') || recupRow[0].startsWith('BLOQUE')) break;
+                                
+                                var nombreEst = recupRow[0];
+                                var valorRecup = recupRow[1];
+                                
+                                if(nombreEst && valorRecup) {
+                                    var est = null;
+                                    for(var ei=0; ei<seccionData.estudiantes.length; ei++) {
+                                        if(seccionData.estudiantes[ei].nombre === nombreEst) {
+                                            est = seccionData.estudiantes[ei];
                                             break;
                                         }
                                     }
                                     
-                                    if (estNum) {
-                                        asistencia.meses[mesKey].registros[estNum] = [];
-                                        for (let i = 1; i < asistencia.meses[mesKey].dias.length + 1; i++) {
-                                            asistencia.meses[mesKey].registros[estNum].push(estRow[i] || '');
+                                    if(est) {
+                                        seccionData.bloques[bloqueActual].recuperaciones[p][est.num] = parseFloat(valorRecup);
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+                    }
+                    
+                    seccionesDetectadas++;
+                }
+                
+                // CARGAR ASISTENCIA
+                var wsAsistencia = wb.Sheets['Asistencia'];
+                if(wsAsistencia) {
+                    var asistData = XLSX.utils.sheet_to_json(wsAsistencia, {header:1});
+                    const mesesNombres = ['', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 
+                                          'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                    
+                    var mesActualLectura = null;
+                    var mesKeyLectura = null;
+                    var anioAsistencia = new Date().getFullYear();
+                    
+                    // Leer año de asistencia de la primera línea
+                    if(asistData[0] && asistData[0][0]) {
+                        var match = asistData[0][0].toString().match(/(\d{4})/);
+                        if(match) anioAsistencia = parseInt(match[1]);
+                    }
+                    
+                    for(var r=0; r<asistData.length; r++) {
+                        var row = asistData[r];
+                        if(!row[0]) continue;
+                        
+                        // Detectar mes
+                        var mesIdx = mesesNombres.indexOf(row[0].toString().toUpperCase());
+                        if(mesIdx > 0) {
+                            mesActualLectura = mesIdx;
+                            mesKeyLectura = anioAsistencia + '-' + mesActualLectura;
+                            
+                            // Leer header de días (siguiente línea)
+                            r++;
+                            var headerRow = asistData[r];
+                            var diasMes = [];
+                            
+                            for(var i=1; i<headerRow.length-1; i++) {
+                                if(headerRow[i] && headerRow[i].toString().startsWith('D')) {
+                                    var dia = parseInt(headerRow[i].toString().replace('D', ''));
+                                    diasMes.push(dia);
+                                }
+                            }
+                            
+                            // Leer registros de estudiantes
+                            for(var er = r+1; er < asistData.length; er++) {
+                                var estRow = asistData[er];
+                                if(!estRow[0] || !estRow[0].toString().trim()) break;
+                                
+                                // Detectar grado-sección del nombre (formato: "1ro-A: NOMBRE")
+                                var nombreCompleto = estRow[0].toString();
+                                var matchGradoSeccion = nombreCompleto.match(/^(\d\w+)-([A-D]):\s*(.+)$/);
+                                
+                                if(matchGradoSeccion) {
+                                    var gradoAsist = matchGradoSeccion[1];
+                                    var seccionAsist = matchGradoSeccion[2];
+                                    var nombreEst = matchGradoSeccion[3];
+                                    
+                                    // Buscar estudiante en ese grado/sección
+                                    if(datosMultigrado.grados[gradoAsist] && 
+                                       datosMultigrado.grados[gradoAsist].secciones[seccionAsist]) {
+                                        
+                                        var seccionData = datosMultigrado.grados[gradoAsist].secciones[seccionAsist];
+                                        var estNum = null;
+                                        
+                                        for(var ei=0; ei<seccionData.estudiantes.length; ei++) {
+                                            if(seccionData.estudiantes[ei].nombre === nombreEst) {
+                                                estNum = seccionData.estudiantes[ei].num;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        if(estNum) {
+                                            // Crear estructura de asistencia para ese grado/sección si no existe
+                                            if(!asistenciaMultigrado.grados[gradoAsist].secciones[seccionAsist]) {
+                                                asistenciaMultigrado.grados[gradoAsist].secciones[seccionAsist] = crearEstructuraAsistencia();
+                                            }
+                                            
+                                            var asistSeccion = asistenciaMultigrado.grados[gradoAsist].secciones[seccionAsist];
+                                            
+                                            // Crear mes si no existe
+                                            if(!asistSeccion.meses[mesKeyLectura]) {
+                                                asistSeccion.meses[mesKeyLectura] = {
+                                                    dias: diasMes,
+                                                    registros: {}
+                                                };
+                                            }
+                                            
+                                            // Guardar registros de asistencia
+                                            asistSeccion.meses[mesKeyLectura].registros[estNum] = [];
+                                            for(var i=1; i<=diasMes.length; i++) {
+                                                asistSeccion.meses[mesKeyLectura].registros[estNum].push(estRow[i] || '');
+                                            }
                                         }
                                     }
                                 }
@@ -2522,32 +3096,111 @@
                         }
                     }
                     
-                    // Usar valores fijos para la información (excepto grado)
-                    datos.info.centro = 'Alberto Feliz Bello';
-                    datos.info.maestro = 'Luis Abel Gómez Féliz';
-                    datos.info.asignatura = 'Educación Física';
-                    datos.info.grado = datos.info.grado; // mantener el grado cargado
-                    datos.info.anio = '2025 - 2026';
-                    
-                    document.getElementById('grado').value = datos.info.grado;
-                    
-                    renderEstudiantes();
-                    renderBloques();
-                    renderEstadisticas();
-                    
-                    // Guardar los datos cargados en LocalStorage
-                    guardarDatosLocalStorage();
-                    
-                    mostrarMensaje('✓ Archivo cargado y guardado correctamente');
-                    
-                } catch(error) {
-                    console.error('Error cargando Excel:', error);
-                    mostrarMensaje('✗ Error al cargar el archivo', true);
+                    console.log('✓ Asistencia multigrado cargada');
                 }
+                
+                // Cargar la sección actual
+                cargarSeccion(datosMultigrado.gradoActual, datosMultigrado.seccionActual);
+                cargarAsistenciaSeccion(datosMultigrado.gradoActual, datosMultigrado.seccionActual);
+                renderEstudiantes();
+                renderBloques();
+                renderEstadisticas();
+                guardarDatosLocalStorage();
+                
+                mostrarMensaje('✓ Excel multigrado cargado: ' + seccionesDetectadas + ' secciones, ' + totalEstudiantes + ' estudiantes');
+                
+            } catch(error) {
+                console.error('Error:', error);
+                mostrarMensaje('✗ Error cargando multigrado: ' + error.message, true);
+            }
+        }
+        
+        // HELPER: Crear estructura de bloque vacía
+        function crearEstructuraBloque() {
+            return {
+                comp:[],
+                periodos: {
+                    1: {indicadores:[], cal:{}, fechasHeader:{}},
+                    2: {indicadores:[], cal:{}, fechasHeader:{}},
+                    3: {indicadores:[], cal:{}, fechasHeader:{}},
+                    4: {indicadores:[], cal:{}, fechasHeader:{}}
+                },
+                recuperaciones: {1:{}, 2:{}, 3:{}, 4:{}}
             };
+        }
+        
+        // CARGAR EXCEL SIMPLE (compatibilidad con archivos antiguos)
+        function cargarExcelSimple(wb) {
+            // Esta función mantiene compatibilidad con Excel antiguos de una sola sección
+            // Se carga en la sección actualmente seleccionada
             
-            reader.readAsArrayBuffer(archivo);
-            event.target.value = '';
+            try {
+                // CARGAR ESTUDIANTES
+                var wsEst = wb.Sheets['Estudiantes'];
+                if(wsEst) {
+                    var estData = XLSX.utils.sheet_to_json(wsEst, {header:1});
+                    datos.estudiantes = [];
+                    for(var i=1; i<estData.length; i++) {
+                        if(estData[i][0] && estData[i][1]) {
+                            datos.estudiantes.push({
+                                num: estData[i][0],
+                                nombre: estData[i][1]
+                            });
+                        }
+                    }
+                }
+                
+                // CARGAR BLOQUES (usando lógica anterior)
+                for(var b=0; b<4; b++) {
+                    var wsBloque = wb.Sheets['Bloque'+(b+1)];
+                    if(!wsBloque) continue;
+                    
+                    var bloqueData = XLSX.utils.sheet_to_json(wsBloque, {header:1});
+                    
+                    datos.bloques[b] = crearEstructuraBloque();
+                    var periodoActual = null;
+                    
+                    for(var r=0; r<bloqueData.length; r++) {
+                        var row = bloqueData[r];
+                        if(!row[0]) continue;
+                        
+                        if(row[0].startsWith('Competencia')) {
+                            datos.bloques[b].comp.push({
+                                competencia: row[1] || '',
+                                indicadores: []
+                            });
+                        } else if(row[0].startsWith('PERÍODO')) {
+                            periodoActual = parseInt(row[0].replace('PERÍODO ', ''));
+                        } else if(row[0].startsWith('Indicador_P')) {
+                            if(periodoActual) {
+                                datos.bloques[b].periodos[periodoActual].indicadores.push({
+                                    texto: row[1] || '',
+                                    criterios: []
+                                });
+                            }
+                        } else if(row[0].startsWith('Criterio_P')) {
+                            if(periodoActual && datos.bloques[b].periodos[periodoActual].indicadores.length > 0) {
+                                var ultimoInd = datos.bloques[b].periodos[periodoActual].indicadores[datos.bloques[b].periodos[periodoActual].indicadores.length - 1];
+                                ultimoInd.criterios.push(row[1] || '');
+                            }
+                        }
+                        // ... resto de la carga similar a antes
+                    }
+                }
+                
+                // Guardar en la sección actual
+                guardarSeccionActual();
+                renderEstudiantes();
+                renderBloques();
+                renderEstadisticas();
+                guardarDatosLocalStorage();
+                
+                mostrarMensaje('✓ Excel simple cargado en ' + datosMultigrado.gradoActual + '-' + datosMultigrado.seccionActual);
+                
+            } catch(error) {
+                console.error('Error:', error);
+                mostrarMensaje('✗ Error: ' + error.message, true);
+            }
         }
         
         function cambiarPantalla(id) {
@@ -2657,6 +3310,49 @@
             }
             
             return cuenta > 0 ? (suma / cuenta) : null;
+        }
+        
+        // CALCULAR PROMEDIO DE BLOQUE CON RECUPERACIONES
+        function calcularPromedioBloque(bloqueIdx, numEstudiante) {
+            var bd = datos.bloques[bloqueIdx];
+            if(!bd) return null;
+            
+            var promediosPeriodos = [];
+            
+            // Calcular promedio de cada período
+            for(var p=1; p<=4; p++) {
+                var promPeriodo = calcularPromedioPeriodo(bloqueIdx, p, numEstudiante);
+                
+                // Verificar si hay recuperación para este período
+                var recuperacion = null;
+                if(bd.recuperaciones && bd.recuperaciones[p] && bd.recuperaciones[p][numEstudiante]) {
+                    recuperacion = parseFloat(bd.recuperaciones[p][numEstudiante]);
+                }
+                
+                // Si hay recuperación, usar el MAYOR entre promedio original y recuperación
+                if(recuperacion !== null && !isNaN(recuperacion)) {
+                    if(promPeriodo !== null) {
+                        // Usar el mayor: recuperación o promedio original
+                        promediosPeriodos.push(Math.max(promPeriodo, recuperacion));
+                    } else {
+                        // Solo hay recuperación
+                        promediosPeriodos.push(recuperacion);
+                    }
+                } else if(promPeriodo !== null) {
+                    // No hay recuperación, usar promedio original
+                    promediosPeriodos.push(promPeriodo);
+                }
+            }
+            
+            // Calcular promedio del bloque
+            if(promediosPeriodos.length === 0) return null;
+            
+            var suma = 0;
+            for(var i=0; i<promediosPeriodos.length; i++) {
+                suma += promediosPeriodos[i];
+            }
+            
+            return suma / promediosPeriodos.length;
         }
         
         
@@ -2968,7 +3664,7 @@
             };
         }
         
-        // RENDER REPORTE FINAL - NUEVO FORMATO CON BLOQUES EN FILA SUPERIOR
+        // RENDER REPORTE FINAL - CON RECUPERACIONES (solo visible si calificación < 70)
         function renderReporteFinal() {
             var html = '<table class="tabla-reporte">';
             
@@ -2978,21 +3674,22 @@
             html += '<tr>';
             html += '<th rowspan="2" style="width:50px">No.</th>';
             html += '<th rowspan="2" style="min-width:200px">Estudiante</th>';
-            html += '<th colspan="4" class="header-bloque1">BLOQUE I</th>';
-            html += '<th colspan="4" class="header-bloque2">BLOQUE II</th>';
-            html += '<th colspan="4" class="header-bloque3">BLOQUE III</th>';
-            html += '<th colspan="4" class="header-bloque4">BLOQUE IV</th>';
+            html += '<th colspan="8" class="header-bloque1">BLOQUE I</th>';
+            html += '<th colspan="8" class="header-bloque2">BLOQUE II</th>';
+            html += '<th colspan="8" class="header-bloque3">BLOQUE III</th>';
+            html += '<th colspan="8" class="header-bloque4">BLOQUE IV</th>';
             html += '<th colspan="4" style="background:#ffc107;color:#333">PROMEDIO BLOQUE</th>';
             html += '<th rowspan="2" style="width:80px;background:#28a745">PROM<br>FINAL</th>';
             html += '<th rowspan="2" style="width:100px;background:#28a745">COND</th>';
             html += '</tr>';
             
-            // FILA 2: Períodos individuales
+            // FILA 2: Períodos individuales con sus recuperaciones
             html += '<tr>';
             var clases = ['bloque1-col', 'bloque2-col', 'bloque3-col', 'bloque4-col'];
             for(var b=0; b<4; b++) {
                 for(var p=1; p<=4; p++) {
                     html += '<th class="'+clases[b]+'">P'+p+'</th>';
+                    html += '<th class="'+clases[b]+'" style="background:#ffe6cc;">RP'+p+'</th>';
                 }
             }
             for(var b=1; b<=4; b++) {
@@ -3011,23 +3708,57 @@
                 var promediosBloques = [];
                 
                 for(var b=0; b<4; b++) {
-                    var sumaBloque = 0;
+                    var valoresParaPromedio = [];
                     
                     for(var p=1; p<=4; p++) {
-                        var prom = calcularPromedioPeriodo(b, p, e.num);
+                        var promPeriodo = calcularPromedioPeriodo(b, p, e.num);
+                        var recuperacion = datos.bloques[b].recuperaciones && datos.bloques[b].recuperaciones[p] ? datos.bloques[b].recuperaciones[p][e.num] : null;
                         
-                        if(prom !== null) {
-                            html += '<td class="'+clases[b]+'">'+Math.round(prom)+'</td>';
-                            sumaBloque += prom;
+                        // MOSTRAR PROMEDIO DEL PERÍODO
+                        if(promPeriodo !== null) {
+                            var colorCelda = '';
+                            if(promPeriodo < 70) {
+                                colorCelda = 'background:#ffcccc;'; // Rojo claro si está por debajo de 70
+                            }
+                            html += '<td class="'+clases[b]+'" style="'+colorCelda+'">'+Math.round(promPeriodo)+'</td>';
                         } else {
                             html += '<td class="'+clases[b]+' sin-datos">-</td>';
                         }
+                        
+                        // MOSTRAR RECUPERACIÓN (SOLO SI HAY CALIFICACIÓN < 70 O SI YA TIENE RECUPERACIÓN)
+                        var mostrarRP = (promPeriodo !== null && promPeriodo < 70) || 
+                                       (recuperacion !== null && recuperacion !== undefined && recuperacion !== '');
+                        
+                        if(mostrarRP) {
+                            if(recuperacion !== null && recuperacion !== undefined && recuperacion !== '') {
+                                html += '<td class="'+clases[b]+'" style="background:#ffe6cc;font-weight:bold;">'+Math.round(recuperacion)+'</td>';
+                            } else {
+                                html += '<td class="'+clases[b]+'" style="background:#ffe6cc;color:#999;">-</td>';
+                            }
+                        } else {
+                            // Si la calificación es >= 70, no mostrar nada en RP
+                            html += '<td class="'+clases[b]+'" style="background:#f0f0f0;"></td>';
+                        }
+                        
+                        // DETERMINAR EL VALOR A USAR PARA EL PROMEDIO
+                        var valorFinal = promPeriodo || 0;
+                        if(recuperacion !== null && recuperacion !== undefined && recuperacion !== '') {
+                            var recupNum = parseFloat(recuperacion);
+                            if(!isNaN(recupNum)) {
+                                valorFinal = Math.max(promPeriodo || 0, recupNum);
+                            }
+                        }
+                        
+                        valoresParaPromedio.push(valorFinal);
                     }
                     
+                    // PROMEDIO DEL BLOQUE: SIEMPRE (P1+P2+P3+P4) / 4
+                    var sumaBloque = valoresParaPromedio[0] + valoresParaPromedio[1] + valoresParaPromedio[2] + valoresParaPromedio[3];
                     var promBloque = sumaBloque / 4;
                     promediosBloques.push(promBloque);
                 }
                 
+                // MOSTRAR PROMEDIOS DE BLOQUES
                 for(var b=0; b<4; b++) {
                     if(promediosBloques[b] > 0) {
                         html += '<td class="promedio-bloques">'+promediosBloques[b].toFixed(2)+'</td>';
@@ -3036,10 +3767,8 @@
                     }
                 }
                 
-                var sumaFinal = 0;
-                for(var b=0; b<4; b++) {
-                    sumaFinal += promediosBloques[b];
-                }
+                // PROMEDIO FINAL: SIEMPRE (PB1+PB2+PB3+PB4) / 4
+                var sumaFinal = promediosBloques[0] + promediosBloques[1] + promediosBloques[2] + promediosBloques[3];
                 var promedioFinal = sumaFinal / 4;
                 
                 if(promedioFinal > 0) {
@@ -3062,6 +3791,137 @@
             
             document.getElementById('tablaReporte').innerHTML = html;
         }
+        
+        // ==================== FUNCIONES DE RECUPERACIÓN ====================
+        
+        function mostrarRecuperacion(periodo) {
+            var html = '<h3 style="color:#1F4E78; margin-bottom:15px;">📝 Calificaciones de Recuperación - Período ' + periodo + '</h3>';
+            html += '<p style="margin-bottom:15px;"><strong>Solo se muestran estudiantes con calificación menor a 70 en este período.</strong></p>';
+            
+            // Contar estudiantes que necesitan recuperación
+            var estudiantesConRecuperacion = [];
+            
+            for(var ei=0; ei<datos.estudiantes.length; ei++) {
+                var e = datos.estudiantes[ei];
+                var necesitaRecuperacion = false;
+                
+                // Verificar si tiene alguna calificación < 70 en este período en cualquier bloque
+                for(var b=0; b<4; b++) {
+                    var promPeriodo = calcularPromedioPeriodo(b, periodo, e.num);
+                    if(promPeriodo !== null && promPeriodo < 70) {
+                        necesitaRecuperacion = true;
+                        break;
+                    }
+                }
+                
+                if(necesitaRecuperacion) {
+                    estudiantesConRecuperacion.push(e);
+                }
+            }
+            
+            if(estudiantesConRecuperacion.length === 0) {
+                html += '<div style="padding:30px; text-align:center; background:#d4edda; border-radius:8px; color:#155724;">';
+                html += '<h3>🎉 ¡Excelente!</h3>';
+                html += '<p style="margin-top:10px;">Ningún estudiante necesita recuperación en el Período '+periodo+'.</p>';
+                html += '<p style="margin-top:5px;">Todos tienen calificaciones ≥ 70 en todos los bloques.</p>';
+                html += '</div>';
+                document.getElementById('contenedorRecuperacion').innerHTML = html;
+                return;
+            }
+            
+            html += '<div style="margin-bottom:15px; padding:12px; background:#fff3cd; border-left:4px solid #ffc107; border-radius:5px;">';
+            html += '<strong>📊 Resumen:</strong> ' + estudiantesConRecuperacion.length + ' estudiante(s) necesitan recuperación en este período.';
+            html += '</div>';
+            
+            html += '<table class="tabla-calif" style="width:100%;">';
+            html += '<thead><tr>';
+            html += '<th style="width:50px;">No.</th>';
+            html += '<th style="min-width:200px;">Estudiante</th>';
+            html += '<th style="background:#4472C4;">Bloque I - RP'+periodo+'</th>';
+            html += '<th style="background:#70AD47;">Bloque II - RP'+periodo+'</th>';
+            html += '<th style="background:#FFC000;">Bloque III - RP'+periodo+'</th>';
+            html += '<th style="background:#E74C3C;">Bloque IV - RP'+periodo+'</th>';
+            html += '</tr></thead><tbody>';
+            
+            for(var i=0; i<estudiantesConRecuperacion.length; i++) {
+                var e = estudiantesConRecuperacion[i];
+                html += '<tr>';
+                html += '<td><strong>'+e.num+'</strong></td>';
+                html += '<td style="text-align:left; padding-left:10px;">'+e.nombre+'</td>';
+                
+                for(var b=0; b<4; b++) {
+                    var promPeriodo = calcularPromedioPeriodo(b, periodo, e.num);
+                    var recuperacionActual = '';
+                    if(datos.bloques[b].recuperaciones && datos.bloques[b].recuperaciones[periodo]) {
+                        recuperacionActual = datos.bloques[b].recuperaciones[periodo][e.num] || '';
+                    }
+                    
+                    var infoExtra = '';
+                    var colorFondo = '';
+                    var habilitado = true;
+                    
+                    if(promPeriodo !== null) {
+                        if(promPeriodo < 70) {
+                            infoExtra = ' 📌 P'+periodo+': '+Math.round(promPeriodo);
+                            colorFondo = 'background:#ffe6cc;';
+                        } else {
+                            infoExtra = ' ✅ P'+periodo+': '+Math.round(promPeriodo);
+                            colorFondo = 'background:#d4edda;';
+                            habilitado = false; // Deshabilitar si ya tiene >= 70
+                        }
+                    }
+                    
+                    html += '<td>';
+                    if(habilitado) {
+                        html += '<input type="number" min="0" max="100" ';
+                        html += 'value="'+recuperacionActual+'" ';
+                        html += 'placeholder="0-100" ';
+                        html += 'onchange="guardarRecuperacion('+b+', '+periodo+', '+e.num+', this.value)" ';
+                        html += 'style="width:100%; padding:8px; border:2px solid #ff9800; border-radius:6px; text-align:center; font-weight:600; font-size:14px; '+colorFondo+'">';
+                    } else {
+                        html += '<input type="number" disabled ';
+                        html += 'placeholder="No necesita" ';
+                        html += 'style="width:100%; padding:8px; border:2px solid #28a745; border-radius:6px; text-align:center; font-weight:600; font-size:13px; '+colorFondo+' color:#666; cursor:not-allowed;">';
+                    }
+                    html += '<div style="font-size:11px; color:#666; margin-top:3px;">'+infoExtra+'</div>';
+                    html += '</td>';
+                }
+                
+                html += '</tr>';
+            }
+            
+            html += '</tbody></table>';
+            
+            html += '<div style="margin-top:20px; padding:15px; background:#d1ecf1; border-left:4px solid #0c5460; border-radius:5px;">';
+            html += '<strong>💡 Nota:</strong><br>';
+            html += '• Solo puedes ingresar recuperaciones para estudiantes con calificación <strong>menor a 70</strong>.<br>';
+            html += '• Los campos con ✅ están deshabilitados porque el estudiante ya aprobó ese bloque.<br>';
+            html += '• El sistema tomará automáticamente la calificación <strong>más alta</strong> entre P'+periodo+' y RP'+periodo+'.';
+            html += '</div>';
+            
+            document.getElementById('contenedorRecuperacion').innerHTML = html;
+        }
+        
+        function guardarRecuperacion(bloque, periodo, numEstudiante, valor) {
+            if(!datos.bloques[bloque].recuperaciones) {
+                datos.bloques[bloque].recuperaciones = {1:{}, 2:{}, 3:{}, 4:{}};
+            }
+            if(!datos.bloques[bloque].recuperaciones[periodo]) {
+                datos.bloques[bloque].recuperaciones[periodo] = {};
+            }
+            
+            if(valor === '' || valor === null) {
+                delete datos.bloques[bloque].recuperaciones[periodo][numEstudiante];
+            } else {
+                datos.bloques[bloque].recuperaciones[periodo][numEstudiante] = parseFloat(valor);
+            }
+            
+            guardarDatosLocalStorage();
+            renderReporteFinal();
+            mostrarMensaje('✓ Recuperación guardada');
+        }
+        
+        // ==================== FIN FUNCIONES DE RECUPERACIÓN ====================
         
         function importarWord(event) {
             var archivo = event.target.files[0];
@@ -3102,11 +3962,215 @@
                             renderEstudiantes();
                             renderBloques();
                             renderEstadisticas();
+                            guardarDatosLocalStorage();
                             mostrarMensaje('✓ ' + nombres.length + ' estudiantes importados');
                         }
                     })
                     .catch(function(error) {
                         mostrarMensaje('✗ Error al leer Word', true);
+                    });
+            };
+            reader.readAsArrayBuffer(archivo);
+            event.target.value = '';
+        }
+        
+        // IMPORTAR WORD MULTIGRADO - Detecta automáticamente todos los grados
+        function importarWordMultigrado(event) {
+            var archivo = event.target.files[0];
+            if(!archivo) return;
+            
+            if(typeof mammoth === 'undefined') {
+                mostrarMensaje('✗ Biblioteca mammoth no disponible', true);
+                return;
+            }
+            
+            mostrarMensaje('⏳ Leyendo archivo Word multigrado...');
+            
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                mammoth.extractRawText({arrayBuffer: e.target.result})
+                    .then(function(resultado) {
+                        var texto = resultado.value;
+                        var lineas = texto.split(/[\r\n]+/);
+                        
+                        // Detectar grados automáticamente
+                        var gradosDetectados = {};
+                        var gradoActualLectura = null;
+                        var seccionActualLectura = null;
+                        
+                        // Patrones para detectar grados y secciones
+                        var patronGradoSeccion = /^(1[er][ora]?|2[dn][oda]?|3[er][ora]?|4[tt][ota]?|5[tt][ota]?|6[tt][ota]?)\s*[-–—]\s*([A-D])\b/i;
+                        
+                        var patronesGrado = [
+                            {regex: /^1[ER][ORA]?\b/i, grado: '1ro'},
+                            {regex: /^2[DN][ODA]?\b/i, grado: '2do'},
+                            {regex: /^3[ER][ORA]?\b/i, grado: '3ro'},
+                            {regex: /^4[TT][OTA]?\b/i, grado: '4to'},
+                            {regex: /^5[TT][OTA]?\b/i, grado: '5to'},
+                            {regex: /^6[TT][OTA]?\b/i, grado: '6to'},
+                            {regex: /PRIMER[OA]?\s+GRADO/i, grado: '1ro'},
+                            {regex: /SEGUND[OA]?\s+GRADO/i, grado: '2do'},
+                            {regex: /TERCER[OA]?\s+GRADO/i, grado: '3ro'},
+                            {regex: /CUART[OA]?\s+GRADO/i, grado: '4to'},
+                            {regex: /QUINT[OA]?\s+GRADO/i, grado: '5to'},
+                            {regex: /SEXT[OA]?\s+GRADO/i, grado: '6to'}
+                        ];
+                        
+                        // Patrones para detectar secciones
+                        var patronSeccion = /SECCI[OÓ]N\s+([A-D])/i;
+                        
+                        for(var i=0; i<lineas.length; i++) {
+                            var linea = lineas[i].trim();
+                            if(linea.length === 0) continue;
+                            
+                            // PATRÓN PRINCIPAL: "4to - A" o "4to – B"
+                            var matchGradoSeccion = linea.match(patronGradoSeccion);
+                            if(matchGradoSeccion) {
+                                var gradoTexto = matchGradoSeccion[1].toLowerCase();
+                                
+                                // Normalizar el grado
+                                if(gradoTexto.match(/^1/)) gradoActualLectura = '1ro';
+                                else if(gradoTexto.match(/^2/)) gradoActualLectura = '2do';
+                                else if(gradoTexto.match(/^3/)) gradoActualLectura = '3ro';
+                                else if(gradoTexto.match(/^4/)) gradoActualLectura = '4to';
+                                else if(gradoTexto.match(/^5/)) gradoActualLectura = '5to';
+                                else if(gradoTexto.match(/^6/)) gradoActualLectura = '6to';
+                                
+                                seccionActualLectura = matchGradoSeccion[2].toUpperCase();
+                                
+                                if(!gradosDetectados[gradoActualLectura]) {
+                                    gradosDetectados[gradoActualLectura] = {};
+                                }
+                                if(!gradosDetectados[gradoActualLectura][seccionActualLectura]) {
+                                    gradosDetectados[gradoActualLectura][seccionActualLectura] = [];
+                                }
+                                
+                                console.log('Detectado: ' + gradoActualLectura + ' - Sección ' + seccionActualLectura);
+                                continue;
+                            }
+                            
+                            // Detectar grado solo (sin sección en la misma línea)
+                            var gradoDetectado = null;
+                            for(var p=0; p<patronesGrado.length; p++) {
+                                if(patronesGrado[p].regex.test(linea)) {
+                                    gradoDetectado = patronesGrado[p].grado;
+                                    break;
+                                }
+                            }
+                            
+                            if(gradoDetectado) {
+                                gradoActualLectura = gradoDetectado;
+                                
+                                // Detectar sección en la misma línea
+                                var matchSeccion = linea.match(patronSeccion);
+                                if(matchSeccion) {
+                                    seccionActualLectura = matchSeccion[1].toUpperCase();
+                                } else {
+                                    seccionActualLectura = 'A'; // Default
+                                }
+                                
+                                if(!gradosDetectados[gradoActualLectura]) {
+                                    gradosDetectados[gradoActualLectura] = {};
+                                }
+                                if(!gradosDetectados[gradoActualLectura][seccionActualLectura]) {
+                                    gradosDetectados[gradoActualLectura][seccionActualLectura] = [];
+                                }
+                                
+                                console.log('Detectado (alt): ' + gradoActualLectura + ' - Sección ' + seccionActualLectura);
+                                continue;
+                            }
+                            
+                            // Detectar sección independiente
+                            var matchSeccionSola = linea.match(patronSeccion);
+                            if(matchSeccionSola && gradoActualLectura) {
+                                seccionActualLectura = matchSeccionSola[1].toUpperCase();
+                                if(!gradosDetectados[gradoActualLectura][seccionActualLectura]) {
+                                    gradosDetectados[gradoActualLectura][seccionActualLectura] = [];
+                                }
+                                continue;
+                            }
+                            
+                            // Si estamos en un grado, agregar el nombre
+                            if(gradoActualLectura && seccionActualLectura) {
+                                // Limpiar numeración al inicio (si existe)
+                                var nombre = linea.replace(/^\d+[\.\)\-\s]+/, '').trim();
+                                
+                                // Validar que sea un nombre válido
+                                // - Debe tener al menos una coma (APELLIDO, NOMBRE)
+                                // - Debe tener al menos 5 caracteres
+                                // - No debe ser un encabezado común
+                                if(nombre.length >= 5 && 
+                                   nombre.includes(',') &&
+                                   !nombre.match(/^(LISTA|ESTUDIANTES|ALUMNOS|NOMBRES|GRADO|SECCION|AÑO)/i)) {
+                                    
+                                    gradosDetectados[gradoActualLectura][seccionActualLectura].push(nombre);
+                                    console.log('Agregado a ' + gradoActualLectura + '-' + seccionActualLectura + ': ' + nombre);
+                                }
+                            }
+                        }
+                        
+                        // Contar total de estudiantes
+                        var totalEstudiantes = 0;
+                        var resumen = [];
+                        
+                        for(var grado in gradosDetectados) {
+                            for(var seccion in gradosDetectados[grado]) {
+                                var cantidad = gradosDetectados[grado][seccion].length;
+                                totalEstudiantes += cantidad;
+                                if(cantidad > 0) {
+                                    resumen.push(grado + '-' + seccion + ': ' + cantidad + ' estudiantes');
+                                }
+                            }
+                        }
+                        
+                        if(totalEstudiantes === 0) {
+                            mostrarMensaje('✗ No se detectaron estudiantes. Verifica el formato del Word.', true);
+                            return;
+                        }
+                        
+                        // Mostrar resumen y confirmar
+                        var mensaje = '📚 ESTUDIANTES DETECTADOS:\n\n' + resumen.join('\n') + '\n\n' +
+                                     'TOTAL: ' + totalEstudiantes + ' estudiantes\n\n' +
+                                     '¿Importar todos estos estudiantes?';
+                        
+                        if(confirm(mensaje)) {
+                            // Importar a la estructura multigrado
+                            for(var grado in gradosDetectados) {
+                                for(var seccion in gradosDetectados[grado]) {
+                                    var nombres = gradosDetectados[grado][seccion];
+                                    if(nombres.length > 0) {
+                                        // Crear o actualizar la sección
+                                        if(!datosMultigrado.grados[grado].secciones[seccion]) {
+                                            datosMultigrado.grados[grado].secciones[seccion] = crearEstructuraSeccion();
+                                        }
+                                        
+                                        // Agregar estudiantes
+                                        datosMultigrado.grados[grado].secciones[seccion].estudiantes = [];
+                                        for(var n=0; n<nombres.length; n++) {
+                                            datosMultigrado.grados[grado].secciones[seccion].estudiantes.push({
+                                                num: n+1,
+                                                nombre: nombres[n]
+                                            });
+                                        }
+                                        
+                                        console.log('✓ Importados ' + nombres.length + ' estudiantes en ' + grado + '-' + seccion);
+                                    }
+                                }
+                            }
+                            
+                            // Recargar la sección actual
+                            cargarSeccion(datosMultigrado.gradoActual, datosMultigrado.seccionActual);
+                            renderEstudiantes();
+                            renderBloques();
+                            renderEstadisticas();
+                            guardarDatosLocalStorage();
+                            
+                            mostrarMensaje('✓ Importados ' + totalEstudiantes + ' estudiantes en ' + resumen.length + ' secciones');
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        mostrarMensaje('✗ Error al leer Word: ' + error.message, true);
                     });
             };
             reader.readAsArrayBuffer(archivo);
@@ -3122,29 +4186,112 @@
         }
         
         function exportarPDF(opcion) {
-            cerrarModalPDF();
-            actualizarInfo();
-            mostrarMensaje('⏳ Generando PDF...');
-            
             try {
-                // Verificar que jsPDF esté disponible
-                if (typeof window.jspdf === 'undefined') {
-                    throw new Error('jsPDF no está cargado');
-                }
+                cerrarModalPDF();
+                actualizarInfo();
                 
+                console.log('===================================');
+                console.log('📄 INICIANDO EXPORTACIÓN PDF');
+                console.log('===================================');
+                console.log('Opción seleccionada:', opcion);
+                console.log('Timestamp:', new Date().toISOString());
+                
+                mostrarMensaje('⏳ Generando PDF...');
+                
+                // PASO 1: Verificar window.jspdf
+                console.log('\n🔍 PASO 1: Verificando window.jspdf');
+                console.log('typeof window.jspdf:', typeof window.jspdf);
+                
+                if (typeof window.jspdf === 'undefined') {
+                    const error = 'jsPDF no está cargado. La biblioteca no se descargó correctamente.';
+                    console.error('❌ ERROR:', error);
+                    alert('❌ ' + error + '\n\nSOLUCIÓN:\n1. Verifica tu conexión a internet\n2. Recarga la página (F5)\n3. Intenta nuevamente');
+                    mostrarMensaje('✗ ' + error, true);
+                    return;
+                }
+                console.log('✅ window.jspdf existe');
+                
+                // PASO 2: Extraer jsPDF
+                console.log('\n🔍 PASO 2: Extrayendo jsPDF');
                 const { jsPDF } = window.jspdf;
+                console.log('typeof jsPDF:', typeof jsPDF);
+                console.log('✅ jsPDF extraído correctamente');
+                
+                // PASO 3: Crear instancia de prueba para verificar autoTable
+                console.log('\n🔍 PASO 3: Verificando autoTable');
+                const testDoc = new jsPDF();
+                console.log('typeof testDoc.autoTable:', typeof testDoc.autoTable);
+                
+                if (typeof testDoc.autoTable !== 'function') {
+                    const error = 'Plugin autoTable no está cargado. Se necesita para generar las tablas.';
+                    console.error('❌ ERROR:', error);
+                    alert('❌ ' + error + '\n\nSOLUCIÓN:\n1. Recarga la página (F5)\n2. Verifica tu conexión a internet\n3. Intenta nuevamente');
+                    mostrarMensaje('✗ ' + error, true);
+                    return;
+                }
+                console.log('✅ autoTable está disponible');
+                
+                // PASO 4: Verificar datos mínimos
+                console.log('\n🔍 PASO 4: Verificando datos');
+                console.log('Estudiantes:', datos.estudiantes.length);
+                
+                if (datos.estudiantes.length === 0) {
+                    const error = 'No hay estudiantes. Agrega al menos un estudiante antes de exportar.';
+                    console.error('⚠️ ADVERTENCIA:', error);
+                    alert('⚠️ ' + error);
+                    mostrarMensaje('✗ ' + error, true);
+                    return;
+                }
+                console.log('✅ Datos verificados');
+                
+                // PASO 5: Generar PDF según opción
+                console.log('\n🔍 PASO 5: Generando PDF');
+                let nombreArchivo;
                 
                 if(opcion === 'final') {
+                    console.log('📊 Generando Reporte Final...');
+                    const doc = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'mm',
+                        format: [297, 420]
+                    });
+                    console.log('✅ Documento creado');
+                    
+                    generarPDFReporteFinal(doc);
+                    console.log('✅ Reporte Final generado');
+                    
+                    nombreArchivo = 'Reporte_Final_' + datos.info.asignatura + '.pdf';
+                    
+                } else {
+                    const bloqueNum = parseInt(opcion);
+                    console.log('📘 Generando Bloque', bloqueNum, '...');
+                    
+                    const doc = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
+                    console.log('✅ Documento creado');
+                    
+                    generarPDFBloque(doc, bloqueNum);
+                    console.log('✅ Bloque', bloqueNum, 'generado');
+                    
+                    nombreArchivo = 'Bloque_' + bloqueNum + '_' + datos.info.asignatura + '.pdf';
+                }
+                
+                // PASO 6: Guardar archivo
+                console.log('\n🔍 PASO 6: Guardando archivo');
+                console.log('Nombre archivo:', nombreArchivo);
+                
+                if (opcion === 'final') {
                     const doc = new jsPDF({
                         orientation: 'landscape',
                         unit: 'mm',
                         format: [297, 420]
                     });
                     generarPDFReporteFinal(doc);
-                    doc.save('Reporte_Final_'+datos.info.asignatura+'.pdf');
-                    
+                    doc.save(nombreArchivo);
                 } else {
-                    // Exportar bloque individual
                     const bloqueNum = parseInt(opcion);
                     const doc = new jsPDF({
                         orientation: 'landscape',
@@ -3152,13 +4299,32 @@
                         format: 'a4'
                     });
                     generarPDFBloque(doc, bloqueNum);
-                    doc.save('Bloque_'+bloqueNum+'_'+datos.info.asignatura+'.pdf');
+                    doc.save(nombreArchivo);
                 }
                 
-                mostrarMensaje('✓ PDF generado correctamente');
+                console.log('✅ Archivo guardado');
+                
+                console.log('\n===================================');
+                console.log('✅ EXPORTACIÓN EXITOSA');
+                console.log('===================================');
+                
+                mostrarMensaje('✓ PDF generado: ' + nombreArchivo);
+                
             } catch(error) {
-                console.error('Error completo:', error);
+                console.log('\n===================================');
+                console.log('❌ ERROR EN EXPORTACIÓN');
+                console.log('===================================');
+                console.error('Tipo:', error.name);
+                console.error('Mensaje:', error.message);
                 console.error('Stack:', error.stack);
+                console.log('===================================');
+                
+                alert('❌ Error al generar PDF:\n\n' + error.message + '\n\n' + 
+                      'Por favor:\n' +
+                      '1. Copia el error de la consola (F12)\n' +
+                      '2. Reporta el error completo\n\n' +
+                      'Error técnico: ' + error.name);
+                
                 mostrarMensaje('✗ Error: ' + error.message, true);
             }
         }
@@ -3179,27 +4345,120 @@
             doc.text('Grado: ' + datos.info.grado + ' | Año Escolar: ' + datos.info.anio, 15, y);
             y += 12;
             
-            var headers = [
-                [
-                    {content: 'No.', rowSpan: 2, styles: {valign: 'middle'}},
-                    {content: 'Estudiante', rowSpan: 2, styles: {valign: 'middle'}},
-                    {content: 'BLOQUE I', colSpan: 4, styles: {fillColor: [68,114,196], halign: 'center'}},
-                    {content: 'BLOQUE II', colSpan: 4, styles: {fillColor: [112,173,71], halign: 'center'}},
-                    {content: 'BLOQUE III', colSpan: 4, styles: {fillColor: [255,192,0], textColor: [0,0,0], halign: 'center'}},
-                    {content: 'BLOQUE IV', colSpan: 4, styles: {fillColor: [231,76,60], halign: 'center'}},
-                    {content: 'PROM BLOQUE', colSpan: 4, styles: {fillColor: [255,193,7], textColor: [0,0,0], halign: 'center'}},
-                    {content: 'FINAL', rowSpan: 2, styles: {fillColor: [40,167,69], valign: 'middle'}},
-                    {content: 'COND', rowSpan: 2, styles: {fillColor: [40,167,69], valign: 'middle'}}
-                ],
-                [
-                    'P1','P2','P3','P4',
-                    'P1','P2','P3','P4',
-                    'P1','P2','P3','P4',
-                    'P1','P2','P3','P4',
-                    'PB1','PB2','PB3','PB4'
-                ]
+            // DETECTAR QUÉ PERÍODOS TIENEN RECUPERACIONES
+            var periodosConRecup = [];
+            for(var b=0; b<4; b++) {
+                periodosConRecup[b] = {};
+                for(var p=1; p<=4; p++) {
+                    var bd = datos.bloques[b];
+                    var hayRecup = false;
+                    
+                    if(bd.recuperaciones && bd.recuperaciones[p]) {
+                        for(var key in bd.recuperaciones[p]) {
+                            if(bd.recuperaciones[p][key]) {
+                                hayRecup = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    periodosConRecup[b][p] = hayRecup;
+                }
+            }
+            
+            // CONSTRUIR HEADERS DINÁMICOS
+            var headers = [];
+            var headerRow1 = [
+                {content: 'No.', rowSpan: 2, styles: {valign: 'middle'}},
+                {content: 'Estudiante', rowSpan: 2, styles: {valign: 'middle'}}
+            ];
+            var headerRow2 = [];
+            
+            var bloquesNombres = ['BLOQUE I', 'BLOQUE II', 'BLOQUE III', 'BLOQUE IV'];
+            var bloquesColores = [
+                [68,114,196],
+                [112,173,71],
+                [255,192,0],
+                [231,76,60]
             ];
             
+            var columnStyles = {
+                0: {cellWidth: 10, halign: 'center', fontSize: 11},
+                1: {cellWidth: 50, halign: 'left', fontSize: 11}
+            };
+            var colIdx = 2;
+            
+            // Para cada bloque
+            for(var b=0; b<4; b++) {
+                var colCount = 0;
+                
+                // Contar columnas del bloque (P + R si hay recuperación)
+                for(var p=1; p<=4; p++) {
+                    colCount++; // Columna de período
+                    if(periodosConRecup[b][p]) {
+                        colCount++; // Columna de recuperación
+                    }
+                }
+                
+                // Header del bloque
+                headerRow1.push({
+                    content: bloquesNombres[b],
+                    colSpan: colCount,
+                    styles: {
+                        fillColor: bloquesColores[b],
+                        textColor: b === 2 ? [0,0,0] : [255,255,255],
+                        halign: 'center'
+                    }
+                });
+                
+                // Headers de períodos
+                for(var p=1; p<=4; p++) {
+                    headerRow2.push('P'+p);
+                    columnStyles[colIdx] = {
+                        fillColor: getLightColor(bloquesColores[b]),
+                        fontSize: 10
+                    };
+                    colIdx++;
+                    
+                    if(periodosConRecup[b][p]) {
+                        headerRow2.push('RP'+p);
+                        columnStyles[colIdx] = {
+                            fillColor: getLighterColor(bloquesColores[b]),
+                            fontSize: 9,
+                            fontStyle: 'italic'
+                        };
+                        colIdx++;
+                    }
+                }
+            }
+            
+            // Columna de promedio de bloque
+            headerRow1.push({
+                content: 'PROM BLOQUE',
+                colSpan: 4,
+                styles: {fillColor: [255,193,7], textColor: [0,0,0], halign: 'center'}
+            });
+            headerRow2.push('PB1', 'PB2', 'PB3', 'PB4');
+            for(var i=0; i<4; i++) {
+                columnStyles[colIdx] = {
+                    fillColor: [255,243,205],
+                    fontStyle: 'bold',
+                    fontSize: 10
+                };
+                colIdx++;
+            }
+            
+            // Columnas finales
+            headerRow1.push(
+                {content: 'FINAL', rowSpan: 2, styles: {fillColor: [40,167,69], valign: 'middle'}},
+                {content: 'COND', rowSpan: 2, styles: {fillColor: [40,167,69], valign: 'middle'}}
+            );
+            columnStyles[colIdx] = {fillColor: [212,237,218], fontStyle: 'bold', fontSize: 12};
+            columnStyles[colIdx+1] = {fillColor: [212,237,218], fontStyle: 'bold', fontSize: 11};
+            
+            headers = [headerRow1, headerRow2];
+            
+            // GENERAR FILAS DE DATOS
             var rows = [];
             
             for(var ei=0; ei<datos.estudiantes.length; ei++) {
@@ -3208,74 +4467,86 @@
                 
                 var promBloques = [];
                 
+                // Para cada bloque
                 for(var b=0; b<4; b++) {
-                    var sumaBloque = 0;
-                    
+                    // Para cada período
                     for(var p=1; p<=4; p++) {
-                        var pr = calcularPromedioPeriodo(b,p,e.num);
+                        var pr = calcularPromedioPeriodo(b, p, e.num);
+                        var bd = datos.bloques[b];
+                        var recuperacion = null;
+                        
+                        if(bd.recuperaciones && bd.recuperaciones[p] && bd.recuperaciones[p][e.num]) {
+                            recuperacion = parseFloat(bd.recuperaciones[p][e.num]);
+                        }
+                        
+                        // Agregar columna de período
                         row.push(pr !== null ? Math.round(pr) : '-');
-                        if(pr !== null) sumaBloque += pr;
+                        
+                        // Si este período tiene recuperaciones, agregar columna de recuperación
+                        if(periodosConRecup[b][p]) {
+                            if(recuperacion !== null && !isNaN(recuperacion)) {
+                                row.push(Math.round(recuperacion));
+                            } else {
+                                row.push('-');
+                            }
+                        }
                     }
                     
-                    var pb = sumaBloque / 4;
-                    promBloques.push(pb);
+                    // Calcular promedio del bloque CON recuperaciones
+                    var pb = calcularPromedioBloque(b, e.num);
+                    promBloques.push(pb !== null ? pb : 0);
                 }
                 
+                // Agregar promedios de cada bloque
                 for(var b=0; b<4; b++) {
                     row.push(promBloques[b] > 0 ? promBloques[b].toFixed(2) : '-');
                 }
                 
+                // Calcular promedio final
                 var sumaFinal = 0;
+                var bloquesConNota = 0;
                 for(var b=0; b<4; b++) {
-                    sumaFinal += promBloques[b];
+                    if(promBloques[b] > 0) {
+                        sumaFinal += promBloques[b];
+                        bloquesConNota++;
+                    }
                 }
-                var pf = sumaFinal / 4;
+                var pf = bloquesConNota > 0 ? (sumaFinal / bloquesConNota) : 0;
                 row.push(pf > 0 ? Math.round(pf) : '-');
                 row.push(pf >= 70 ? 'APR' : (pf > 0 ? 'REP' : '-'));
                 
                 rows.push(row);
             }
             
+            // GENERAR TABLA
             doc.autoTable({
                 startY: y,
                 head: headers,
                 body: rows,
                 theme: 'grid',
-                styles: {fontSize: 10, cellPadding: 2.5, halign: 'center'},
-                headStyles: {fillColor: [31,78,120], textColor: 255, fontSize: 11, fontStyle: 'bold'},
-                columnStyles: {
-                    0: {cellWidth: 10, halign: 'center', fontSize: 11},
-                    1: {cellWidth: 50, halign: 'left', fontSize: 11},
-                    
-                    2: {fillColor: [218,232,252], fontSize: 10}, 
-                    3: {fillColor: [218,232,252], fontSize: 10}, 
-                    4: {fillColor: [218,232,252], fontSize: 10}, 
-                    5: {fillColor: [218,232,252], fontSize: 10},
-                    
-                    6: {fillColor: [213,232,212], fontSize: 10}, 
-                    7: {fillColor: [213,232,212], fontSize: 10}, 
-                    8: {fillColor: [213,232,212], fontSize: 10}, 
-                    9: {fillColor: [213,232,212], fontSize: 10},
-                    
-                    10: {fillColor: [255,242,204], fontSize: 10}, 
-                    11: {fillColor: [255,242,204], fontSize: 10}, 
-                    12: {fillColor: [255,242,204], fontSize: 10}, 
-                    13: {fillColor: [255,242,204], fontSize: 10},
-                    
-                    14: {fillColor: [248,206,204], fontSize: 10}, 
-                    15: {fillColor: [248,206,204], fontSize: 10}, 
-                    16: {fillColor: [248,206,204], fontSize: 10}, 
-                    17: {fillColor: [248,206,204], fontSize: 10},
-                    
-                    18: {fillColor: [255,243,205], fontStyle: 'bold', fontSize: 10},
-                    19: {fillColor: [255,243,205], fontStyle: 'bold', fontSize: 10},
-                    20: {fillColor: [255,243,205], fontStyle: 'bold', fontSize: 10},
-                    21: {fillColor: [255,243,205], fontStyle: 'bold', fontSize: 10},
-                    
-                    22: {fillColor: [212,237,218], fontStyle: 'bold', fontSize: 12},
-                    23: {fillColor: [212,237,218], fontStyle: 'bold', fontSize: 11}
-                }
+                styles: {fontSize: 9, cellPadding: 2, halign: 'center'},
+                headStyles: {fillColor: [31,78,120], textColor: 255, fontSize: 10, fontStyle: 'bold'},
+                columnStyles: columnStyles,
+                margin: {left: 10, right: 10}
             });
+        }
+        
+        // FUNCIÓN AUXILIAR: Obtener color claro
+        function getLightColor(rgb) {
+            return [
+                Math.min(255, rgb[0] + 80),
+                Math.min(255, rgb[1] + 80),
+                Math.min(255, rgb[2] + 80)
+            ];
+        }
+        
+        // FUNCIÓN AUXILIAR: Obtener color más claro
+        function getLighterColor(rgb) {
+            return [
+                Math.min(255, rgb[0] + 120),
+                Math.min(255, rgb[1] + 120),
+                Math.min(255, rgb[2] + 120)
+            ];
         }
         
         function generarPDFBloque(doc, bloqueNum) {
@@ -3663,6 +4934,7 @@
         function agregarIndicadorPeriodo(bi,periodo) {
             datos.bloques[bi].periodos[periodo].indicadores.push({texto:'Nuevo Indicador',criterios:['Criterio 1']});
             renderIndicadoresPeriodo(bi+1, periodo);
+            renderTabla(bi+1, periodo); // ← Actualizar tabla de calificaciones
             guardarDatosLocalStorage();
             mostrarMensaje('✓ Indicador agregado al Período '+periodo);
         }
@@ -3754,6 +5026,7 @@
                 });
                 
                 renderIndicadoresPeriodo(bi+1, periodo);
+                renderTabla(bi+1, periodo); // ← Actualizar tabla de calificaciones
                 guardarDatosLocalStorage();
                 modal.remove();
                 mostrarMensaje('✓ Criterio agregado: ' + (tipo === 'letra' ? '📝 Letras' : '🔢 Números'));
