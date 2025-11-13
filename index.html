@@ -5,6 +5,299 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instrumento de Evaluación</title>
     <style>
+        /* ===================================== */
+        /* LOGIN HERMOSO Y COMPACTO */
+        /* ===================================== */
+        
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 10000;
+            overflow: hidden;
+        }
+        
+        .login-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .login-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite;
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+        }
+        
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: 10%;
+            animation-delay: 5s;
+        }
+        
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            right: -50px;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+        
+        .login-box-compact {
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 35px 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 380px;
+            animation: slideIn 0.6s ease-out;
+            z-index: 2;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .login-header-compact {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-icon-compact {
+            font-size: 50px;
+            margin-bottom: 12px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .login-title-compact {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.5px;
+        }
+        
+        .login-subtitle-compact {
+            font-size: 13px;
+            color: #718096;
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .login-form-compact {
+            margin-bottom: 20px;
+        }
+        
+        .input-group-compact {
+            position: relative;
+            margin-bottom: 18px;
+        }
+        
+        .input-icon-compact {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .login-input-compact {
+            width: 100%;
+            padding: 14px 18px 14px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+            color: #2d3748;
+            font-family: inherit;
+        }
+        
+        .login-input-compact:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .login-input-compact::placeholder {
+            color: #a0aec0;
+        }
+        
+        .login-error-compact {
+            display: none;
+            background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            animation: shake 0.5s;
+            box-shadow: 0 5px 15px rgba(245, 101, 101, 0.3);
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .error-icon {
+            font-size: 16px;
+            margin-right: 6px;
+        }
+        
+        .login-button-compact {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            font-family: inherit;
+        }
+        
+        .login-button-compact:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+        
+        .login-button-compact:active {
+            transform: translateY(-1px);
+        }
+        
+        .button-icon {
+            font-size: 18px;
+        }
+        
+        .login-footer-compact {
+            text-align: center;
+            padding-top: 18px;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        .login-footer-compact p {
+            margin: 0;
+            color: #4a5568;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .login-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .decoration-circle {
+            position: absolute;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: pulse 3s infinite;
+        }
+        
+        .circle-1 {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 15%;
+        }
+        
+        .circle-2 {
+            width: 150px;
+            height: 150px;
+            bottom: 15%;
+            left: 10%;
+            animation-delay: 1s;
+        }
+        
+        .circle-3 {
+            width: 80px;
+            height: 80px;
+            top: 60%;
+            right: 20%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .login-box-compact {
+                padding: 30px 25px;
+                margin: 20px;
+            }
+            
+            .login-title-compact {
+                font-size: 20px;
+            }
+            
+            .login-icon-compact {
+                font-size: 45px;
+            }
+        }
+        
+    </style>
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: Arial, sans-serif; 
@@ -1377,6 +1670,69 @@
     </style>
 </head>
 <body>
+    
+    <!-- Sistema principal oculto hasta login -->
+        <!-- MODAL DE LOGIN HERMOSO Y COMPACTO -->
+    <div id="modalLogin" class="login-container">
+        <div class="login-background">
+            <div class="login-shape shape-1"></div>
+            <div class="login-shape shape-2"></div>
+            <div class="login-shape shape-3"></div>
+        </div>
+        
+        <div class="login-box-compact">
+            <div class="login-header-compact">
+                <div class="login-icon-compact">🏫</div>
+                <h1 class="login-title-compact">Educación Física</h1>
+                <p class="login-subtitle-compact">Alberto Feliz Bello</p>
+            </div>
+            
+            <div class="login-form-compact">
+                <div class="input-group-compact">
+                    <div class="input-icon-compact">👤</div>
+                    <input type="text" 
+                           id="loginUsuario" 
+                           class="login-input-compact" 
+                           placeholder="Usuario"
+                           autocomplete="username"
+                           onkeypress="if(event.key==='Enter') intentarLogin()">
+                </div>
+                
+                <div class="input-group-compact">
+                    <div class="input-icon-compact">🔒</div>
+                    <input type="password" 
+                           id="loginPassword" 
+                           class="login-input-compact" 
+                           placeholder="Contraseña"
+                           autocomplete="current-password"
+                           onkeypress="if(event.key==='Enter') intentarLogin()">
+                </div>
+                
+                <div id="loginError" class="login-error-compact">
+                    <span class="error-icon">⚠️</span>
+                    <span class="error-text">Usuario o contraseña incorrectos</span>
+                </div>
+                
+                <button onclick="intentarLogin()" class="login-button-compact">
+                    <span class="button-text">Iniciar Sesión</span>
+                    <span class="button-icon">🚀</span>
+                </button>
+            </div>
+            
+            <div class="login-footer-compact">
+                <p>Prof. Luis Abel Gómez Féliz</p>
+            </div>
+        </div>
+        
+        <div class="login-decoration">
+            <div class="decoration-circle circle-1"></div>
+            <div class="decoration-circle circle-2"></div>
+            <div class="decoration-circle circle-3"></div>
+        </div>
+    </div>
+
+    <div id="sistemaCompleto" style="display: none;">
+
     <div class="container">
         <div class="header">
             <h1>📊 Instrumento de Evaluación</h1>
@@ -1390,6 +1746,9 @@
                     <button class="btn-toolbar btn-secondary" onclick="document.getElementById('archivoExcel').click()">📂 Cargar Excel</button>
                     <button class="btn-toolbar btn-warning" onclick="abrirModalPDF()">📄 Exportar PDF</button>
                     <input type="file" id="archivoExcel" accept=".xlsx" onchange="cargarExcel(event)">
+                                    <button class="btn-toolbar" onclick="cerrarSesion()" style="background: #c62828; margin-left: 10px;">
+                        🚪 Cerrar Sesión
+                    </button>
                 </div>
                 <div style="flex:1;text-align:right;">
                     <span id="indicadorGuardado" style="font-weight:bold;font-size:13px;padding:8px 15px;background:white;border-radius:8px;border:2px solid #e0e0e0;">
@@ -1894,6 +2253,65 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     
     <script>
+        // ====================================
+        // SISTEMA DE LOGIN
+        // ====================================
+        
+        const USUARIO_VALIDO = "Luis Gomez";
+        const PASSWORD_VALIDO = "Luis1993";
+        
+        function verificarSesion() {
+            const sesionActiva = localStorage.getItem('sesionActiva');
+            if (sesionActiva === 'true') {
+                cerrarModalLogin();
+                return true;
+            }
+            return false;
+        }
+        
+        function intentarLogin() {
+            const usuario = document.getElementById('loginUsuario').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (usuario === USUARIO_VALIDO && password === PASSWORD_VALIDO) {
+                localStorage.setItem('sesionActiva', 'true');
+                document.getElementById('loginError').style.display = 'none';
+                cerrarModalLogin();
+                mostrarMensaje('✓ ¡Bienvenido, ' + usuario + '!');
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginPassword').focus();
+            }
+        }
+        
+        function cerrarModalLogin() {
+            document.getElementById('modalLogin').style.display = 'none';
+            document.getElementById('sistemaCompleto').style.display = 'block';
+        }
+        
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                localStorage.removeItem('sesionActiva');
+                location.reload();
+            }
+        }
+        
+        window.addEventListener('load', function() {
+            if (!verificarSesion()) {
+                document.getElementById('modalLogin').style.display = 'flex';
+                document.getElementById('sistemaCompleto').style.display = 'none';
+                setTimeout(function() {
+                    document.getElementById('loginUsuario').focus();
+                }, 300);
+            } else {
+                document.getElementById('modalLogin').style.display = 'none';
+                document.getElementById('sistemaCompleto').style.display = 'block';
+            }
+        });
+        
+    </script>
+    <script>
         // Verificar que las bibliotecas se cargaron correctamente
         window.addEventListener('load', function() {
             console.log('🔍 Verificando bibliotecas...');
@@ -1911,7 +2329,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     
     <script>
-        var NOTAS = {'A+':100,'A':94,'A-':90,'B+':87,'B':84,'B-':80,'C+':77,'C':74,'C-':70,'D+':67,'D':64,'D-':60,'F':50};
+        var NOTAS = {'A+':100,'A':94,'A-':90,'B+':87,'B':84,'B-':80,'C+':77,'C':74,'C-':70,'D+':67,'D':64,'D-':60,'F':50,'G':40,'H':30,'N/A':0};
         
         // ESTRUCTURA MULTIGRADO - FIREBASE READY
         var datosMultigrado = {
@@ -2150,7 +2568,7 @@
                     cargarAsistenciaSeccion(datosMultigrado.gradoActual, datosMultigrado.seccionActual);
                 } else {
                     // Migrar asistencia antigua si existe
-                    var asistenciaAntigua = localStorage.getItem('educoco_asistencia');
+                    var asistenciaAntigua = localStorage.getItem('educoco_asistencia_multigrado');
                     if(asistenciaAntigua) {
                         var tempOld = JSON.parse(asistenciaAntigua);
                         Object.assign(asistencia, tempOld);
@@ -2219,15 +2637,37 @@
             }
             
             asistenciaMultigrado.grados[grado].secciones[seccion] = JSON.parse(JSON.stringify(asistencia));
+            
+            console.log('💾 Asistencia guardada:', grado + '-' + seccion);
+            console.log('  - Meses:', Object.keys(asistencia.meses));
+            for(var mesKey in asistencia.meses) {
+                console.log('  - ' + mesKey + ':', asistencia.meses[mesKey].dias, '→', Object.keys(asistencia.meses[mesKey].registros).length + ' estudiantes');
+            }
         }
         
         // Cargar asistencia de una sección específica
         function cargarAsistenciaSeccion(grado, seccion) {
+            console.log('🔄 cargarAsistenciaSeccion:', grado, seccion);
+            
             if(!asistenciaMultigrado.grados[grado].secciones[seccion]) {
                 asistenciaMultigrado.grados[grado].secciones[seccion] = crearEstructuraAsistencia();
             }
             
             asistencia = JSON.parse(JSON.stringify(asistenciaMultigrado.grados[grado].secciones[seccion]));
+            
+            console.log('📊 Asistencia cargada:');
+            console.log('  - Año:', asistencia.anioActual);
+            console.log('  - Mes:', asistencia.mesActual);
+            console.log('  - Meses con datos:', Object.keys(asistencia.meses));
+            
+            // Verificar si hay registros
+            var mesKey = asistencia.anioActual + '-' + asistencia.mesActual;
+            if(asistencia.meses[mesKey]) {
+                console.log('  - Días en mes actual:', asistencia.meses[mesKey].dias);
+                console.log('  - Estudiantes con registro:', Object.keys(asistencia.meses[mesKey].registros).length);
+            } else {
+                console.log('  ⚠️ No hay datos para el mes actual');
+            }
         }
         
         // ==================== SISTEMA DE LOCALSTORAGE ====================
@@ -2239,8 +2679,8 @@
         
         function cargarDatosLocalStorage() {
             try {
-                const datosGuardados = localStorage.getItem('sistemaEducativo_datos');
-                const asistenciaGuardada = localStorage.getItem('sistemaEducativo_asistencia');
+                const datosGuardados = localStorage.getItem('educoco_multigrado');
+                const asistenciaGuardada = localStorage.getItem('educoco_asistencia_multigrado');
                 
                 if (datosGuardados) {
                     const temp = JSON.parse(datosGuardados);
@@ -2365,14 +2805,14 @@
                 actualizarIndicadorGuardado();
                 
                 // Guardar datos principales
-                localStorage.setItem('sistemaEducativo_datos', JSON.stringify({
+                localStorage.setItem('educoco_multigrado', JSON.stringify({
                     info: datos.info,
                     estudiantes: datos.estudiantes,
                     bloques: datos.bloques
                 }));
                 
                 // Guardar asistencia por separado (puede ser grande)
-                localStorage.setItem('sistemaEducativo_asistencia', JSON.stringify(asistencia));
+                localStorage.setItem('educoco_asistencia_multigrado', JSON.stringify(asistencia));
                 
                 estadoGuardado.guardando = false;
                 estadoGuardado.ultimoGuardado = new Date();
@@ -2646,7 +3086,7 @@
                                             if(!isNaN(valorNum)) {
                                                 suma += valorNum;
                                                 cuenta++;
-                                            } else if(NOTAS[cal]) {
+                                            } else if(NOTAS[cal] !== undefined) {
                                                 suma += NOTAS[cal];
                                                 cuenta++;
                                             }
@@ -2686,62 +3126,86 @@
                     }
                 }
                 
-                // HOJA DE ASISTENCIA (todas las secciones)
+                                // HOJA DE ASISTENCIA - CADA SECCIÓN CON SUS PROPIOS DÍAS
                 const mesesNombres = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
                                       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
                 const ordenMeses = [8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6];
                 
-                const asistenciaData = [['ASISTENCIA - AÑO ' + asistencia.anioActual]];
-                asistenciaData.push(['TODAS LAS SECCIONES']);
+                // Guardar asistencia actual antes de exportar
+                guardarAsistenciaActual();
+                
+                const asistenciaData = [['ASISTENCIA - AÑO ' + new Date().getFullYear()]];
+                asistenciaData.push(['POR SECCIÓN Y MES']);
                 asistenciaData.push([]);
                 
-                // Por ahora, asistencia es compartida (se puede separar en el futuro)
+                // RECORRER TODOS LOS MESES
                 for (let mIdx = 0; mIdx < ordenMeses.length; mIdx++) {
                     const m = ordenMeses[mIdx];
-                    const mesKey = asistencia.anioActual + '-' + m;
+                    const anioActual = new Date().getFullYear();
+                    const mesKey = anioActual + '-' + m;
                     
-                    if (asistencia.meses[mesKey]) {
-                        const mesData = asistencia.meses[mesKey];
-                        asistenciaData.push([mesesNombres[m].toUpperCase()]);
-                        
-                        const headerDias = ['Estudiante'];
-                        for (let i = 0; i < mesData.dias.length; i++) {
-                            headerDias.push('D' + mesData.dias[i]);
-                        }
-                        headerDias.push('% Asist');
-                        asistenciaData.push(headerDias);
-                        
-                        // Estudiantes de TODOS los grados
-                        for(var g=0; g<gradosExportar.length; g++) {
-                            var grado = gradosExportar[g];
-                            for(var s=0; s<seccionesExportar.length; s++) {
-                                var seccion = seccionesExportar[s];
-                                
-                                if(!datosMultigrado.grados[grado].secciones[seccion]) continue;
+                    var hayDatosEnMes = false;
+                    
+                    // RECORRER CADA SECCIÓN
+                    for(var g=0; g<gradosExportar.length; g++) {
+                        var grado = gradosExportar[g];
+                        for(var s=0; s<seccionesExportar.length; s++) {
+                            var seccion = seccionesExportar[s];
+                            
+                            if(!datosMultigrado.grados[grado].secciones[seccion]) continue;
+                            if(!asistenciaMultigrado.grados[grado].secciones[seccion]) continue;
+                            
+                            var asistSeccion = asistenciaMultigrado.grados[grado].secciones[seccion];
+                            
+                            // Verificar si esta sección tiene datos para este mes
+                            if(asistSeccion.meses[mesKey] && asistSeccion.meses[mesKey].dias.length > 0) {
+                                var mesData = asistSeccion.meses[mesKey];
                                 var seccionData = datosMultigrado.grados[grado].secciones[seccion];
                                 
+                                hayDatosEnMes = true;
+                                
+                                // HEADER: MES - GRADO-SECCIÓN
+                                asistenciaData.push([mesesNombres[m].toUpperCase() + ' - ' + grado + '-' + seccion]);
+                                
+                                // HEADER: Días (SOLO los días de esta sección)
+                                const headerDias = ['Estudiante'];
+                                for (let i = 0; i < mesData.dias.length; i++) {
+                                    headerDias.push('D' + mesData.dias[i]);
+                                }
+                                headerDias.push('% Asist');
+                                asistenciaData.push(headerDias);
+                                
+                                // ESTUDIANTES de esta sección
                                 for (let ei = 0; ei < seccionData.estudiantes.length; ei++) {
                                     const e = seccionData.estudiantes[ei];
-                                    const registros = mesData.registros[e.num] || [];
-                                    const row = [grado + '-' + seccion + ': ' + e.nombre];
+                                    const row = [e.nombre];  // Solo nombre, sin prefijo de grado
                                     
-                                    for (let i = 0; i < mesData.dias.length; i++) {
-                                        row.push(registros[i] || '');
+                                    var registrosEst = mesData.registros[e.num] || [];
+                                    
+                                    // Para cada día de ESTA sección
+                                    for (let d = 0; d < mesData.dias.length; d++) {
+                                        row.push(registrosEst[d] || '');
                                     }
                                     
-                                    const porc = calcularPorcentajeAsistencia(registros, mesData.dias.length);
+                                    const porc = calcularPorcentajeAsistencia(registrosEst, mesData.dias.length);
                                     row.push(porc.toFixed(1) + '%');
                                     
                                     asistenciaData.push(row);
                                 }
+                                
+                                // Línea en blanco entre secciones
+                                asistenciaData.push([]);
                             }
                         }
-                        
+                    }
+                    
+                    // Si hubo datos en este mes, agregar línea adicional
+                    if(hayDatosEnMes) {
                         asistenciaData.push([]);
                     }
                 }
                 
-                const wsAsistencia = XLSX.utils.aoa_to_sheet(asistenciaData);
+const wsAsistencia = XLSX.utils.aoa_to_sheet(asistenciaData);
                 XLSX.utils.book_append_sheet(wb, wsAsistencia, 'Asistencia');
                 
                 var fecha = new Date().toISOString().slice(0,10);
@@ -3009,6 +3473,8 @@
                                           'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
                     
                     var mesActualLectura = null;
+                    var gradoActualLectura = null;
+                    var seccionActualLectura = null;
                     var mesKeyLectura = null;
                     var anioAsistencia = new Date().getFullYear();
                     
@@ -3022,30 +3488,116 @@
                         var row = asistData[r];
                         if(!row[0]) continue;
                         
-                        // Detectar mes
-                        var mesIdx = mesesNombres.indexOf(row[0].toString().toUpperCase());
+                        var rowText = row[0].toString();
+                        
+                        // NUEVO FORMATO: Detectar "NOVIEMBRE - 3ro-A"
+                        var matchNuevoFormato = rowText.match(/^([A-Z]+)\s*-\s*(\d\w+)-([A-D])$/i);
+                        if(matchNuevoFormato) {
+                            var mesNombre = matchNuevoFormato[1].toUpperCase();
+                            gradoActualLectura = matchNuevoFormato[2];
+                            seccionActualLectura = matchNuevoFormato[3];
+                            
+                            var mesIdx = mesesNombres.indexOf(mesNombre);
+                            if(mesIdx > 0) {
+                                mesActualLectura = mesIdx;
+                                mesKeyLectura = anioAsistencia + '-' + mesActualLectura;
+                                
+                                console.log('📅 Cargando:', mesNombre, gradoActualLectura + '-' + seccionActualLectura);
+                                
+                                // Leer header de días (siguiente línea)
+                                r++;
+                                if(r >= asistData.length) break;
+                                var headerRow = asistData[r];
+                                var diasMes = [];
+                                
+                                if(headerRow) {
+                                    for(var i=1; i<headerRow.length-1; i++) {
+                                        if(headerRow[i] && headerRow[i].toString().startsWith('D')) {
+                                            var dia = parseInt(headerRow[i].toString().replace('D', ''));
+                                            diasMes.push(dia);
+                                        }
+                                    }
+                                }
+                                
+                                console.log('  Días:', diasMes);
+                                
+                                // Crear estructura si no existe
+                                if(!asistenciaMultigrado.grados[gradoActualLectura]) continue;
+                                if(!asistenciaMultigrado.grados[gradoActualLectura].secciones[seccionActualLectura]) {
+                                    asistenciaMultigrado.grados[gradoActualLectura].secciones[seccionActualLectura] = crearEstructuraAsistencia();
+                                }
+                                
+                                var asistSeccion = asistenciaMultigrado.grados[gradoActualLectura].secciones[seccionActualLectura];
+                                
+                                // Crear mes si no existe
+                                if(!asistSeccion.meses[mesKeyLectura]) {
+                                    asistSeccion.meses[mesKeyLectura] = {
+                                        dias: diasMes,
+                                        registros: {}
+                                    };
+                                }
+                                
+                                // Leer estudiantes (siguiente línea en adelante)
+                                var seccionData = datosMultigrado.grados[gradoActualLectura].secciones[seccionActualLectura];
+                                var contadorEst = 0;
+                                
+                                for(var er = r+1; er < asistData.length; er++) {
+                                    var estRow = asistData[er];
+                                    if(!estRow[0] || !estRow[0].toString().trim()) break;
+                                    
+                                    var nombreEst = estRow[0].toString();
+                                    var estNum = null;
+                                    
+                                    // Buscar estudiante por nombre
+                                    for(var ei=0; ei<seccionData.estudiantes.length; ei++) {
+                                        if(seccionData.estudiantes[ei].nombre === nombreEst) {
+                                            estNum = seccionData.estudiantes[ei].num;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if(estNum) {
+                                        // Guardar registros de asistencia
+                                        asistSeccion.meses[mesKeyLectura].registros[estNum] = [];
+                                        for(var i=1; i<=diasMes.length; i++) {
+                                            asistSeccion.meses[mesKeyLectura].registros[estNum].push(estRow[i] || '');
+                                        }
+                                        contadorEst++;
+                                    }
+                                }
+                                
+                                console.log('  ✓ Cargados:', contadorEst, 'estudiantes');
+                                r = er - 1; // Ajustar índice
+                                continue;
+                            }
+                        }
+                        
+                        // FORMATO ANTIGUO: Detectar "NOVIEMBRE" solo
+                        var mesIdx = mesesNombres.indexOf(rowText.toUpperCase());
                         if(mesIdx > 0) {
                             mesActualLectura = mesIdx;
                             mesKeyLectura = anioAsistencia + '-' + mesActualLectura;
                             
                             // Leer header de días (siguiente línea)
                             r++;
+                            if(r >= asistData.length) break;
                             var headerRow = asistData[r];
                             var diasMes = [];
                             
-                            for(var i=1; i<headerRow.length-1; i++) {
-                                if(headerRow[i] && headerRow[i].toString().startsWith('D')) {
-                                    var dia = parseInt(headerRow[i].toString().replace('D', ''));
-                                    diasMes.push(dia);
+                            if(headerRow) {
+                                for(var i=1; i<headerRow.length-1; i++) {
+                                    if(headerRow[i] && headerRow[i].toString().startsWith('D')) {
+                                        var dia = parseInt(headerRow[i].toString().replace('D', ''));
+                                        diasMes.push(dia);
+                                    }
                                 }
                             }
                             
-                            // Leer registros de estudiantes
+                            // Leer registros de estudiantes (formato: "3ro-A: NOMBRE")
                             for(var er = r+1; er < asistData.length; er++) {
                                 var estRow = asistData[er];
                                 if(!estRow[0] || !estRow[0].toString().trim()) break;
                                 
-                                // Detectar grado-sección del nombre (formato: "1ro-A: NOMBRE")
                                 var nombreCompleto = estRow[0].toString();
                                 var matchGradoSeccion = nombreCompleto.match(/^(\d\w+)-([A-D]):\s*(.+)$/);
                                 
@@ -3054,7 +3606,6 @@
                                     var seccionAsist = matchGradoSeccion[2];
                                     var nombreEst = matchGradoSeccion[3];
                                     
-                                    // Buscar estudiante en ese grado/sección
                                     if(datosMultigrado.grados[gradoAsist] && 
                                        datosMultigrado.grados[gradoAsist].secciones[seccionAsist]) {
                                         
@@ -3069,14 +3620,12 @@
                                         }
                                         
                                         if(estNum) {
-                                            // Crear estructura de asistencia para ese grado/sección si no existe
                                             if(!asistenciaMultigrado.grados[gradoAsist].secciones[seccionAsist]) {
                                                 asistenciaMultigrado.grados[gradoAsist].secciones[seccionAsist] = crearEstructuraAsistencia();
                                             }
                                             
                                             var asistSeccion = asistenciaMultigrado.grados[gradoAsist].secciones[seccionAsist];
                                             
-                                            // Crear mes si no existe
                                             if(!asistSeccion.meses[mesKeyLectura]) {
                                                 asistSeccion.meses[mesKeyLectura] = {
                                                     dias: diasMes,
@@ -3084,7 +3633,6 @@
                                                 };
                                             }
                                             
-                                            // Guardar registros de asistencia
                                             asistSeccion.meses[mesKeyLectura].registros[estNum] = [];
                                             for(var i=1; i<=diasMes.length; i++) {
                                                 asistSeccion.meses[mesKeyLectura].registros[estNum].push(estRow[i] || '');
@@ -3301,7 +3849,7 @@
                             suma += valor;
                             cuenta++;
                         }
-                    } else if(NOTAS[cal]) {
+                    } else if(NOTAS[cal] !== undefined) {
                         // Es una letra, convertir a número
                         suma += NOTAS[cal];
                         cuenta++;
@@ -3433,7 +3981,7 @@
                         // Selector de letras
                         html += '<select onchange="guardarCalPeriodo('+bloqueIdx+','+(periodo+1)+','+est.num+','+i+',this.value)" style="width:100%;padding:8px;border:2px solid #667eea;border-radius:6px;font-weight:600;font-size:14px;">';
                         html += '<option value="">-</option>';
-                        var notas = ['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','F'];
+                        var notas = ['A+','A','A-','B+','B','B-','C+','C','C-','D+','D','D-','F','G','H','N/A'];
                         for(var n=0; n<notas.length; n++) {
                             html += '<option value="'+notas[n]+'" '+(calActual===notas[n]?'selected':'')+'>'+notas[n]+'</option>';
                         }
@@ -3450,7 +3998,8 @@
                                 suma += valor;
                                 cuenta++;
                             }
-                        } else if(NOTAS[calActual]) {
+                        } else if(NOTAS[calActual] !== undefined) {
+                            // N/A, G, H también cuentan (incluso si valen 0)
                             suma += NOTAS[calActual];
                             cuenta++;
                         }
@@ -3664,8 +4213,29 @@
             };
         }
         
-        // RENDER REPORTE FINAL - CON RECUPERACIONES (solo visible si calificación < 70)
+        // RENDER REPORTE FINAL - CON RECUPERACIONES DINÁMICAS
         function renderReporteFinal() {
+            // DETECTAR QUÉ PERÍODOS TIENEN RECUPERACIONES
+            var periodosConRecup = [];
+            for(var b=0; b<4; b++) {
+                periodosConRecup[b] = {};
+                for(var p=1; p<=4; p++) {
+                    var hayRecup = false;
+                    var bd = datos.bloques[b];
+                    
+                    if(bd.recuperaciones && bd.recuperaciones[p]) {
+                        for(var key in bd.recuperaciones[p]) {
+                            if(bd.recuperaciones[p][key]) {
+                                hayRecup = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    periodosConRecup[b][p] = hayRecup;
+                }
+            }
+            
             var html = '<table class="tabla-reporte">';
             
             html += '<thead>';
@@ -3674,24 +4244,40 @@
             html += '<tr>';
             html += '<th rowspan="2" style="width:50px">No.</th>';
             html += '<th rowspan="2" style="min-width:200px">Estudiante</th>';
-            html += '<th colspan="8" class="header-bloque1">BLOQUE I</th>';
-            html += '<th colspan="8" class="header-bloque2">BLOQUE II</th>';
-            html += '<th colspan="8" class="header-bloque3">BLOQUE III</th>';
-            html += '<th colspan="8" class="header-bloque4">BLOQUE IV</th>';
+            
+            var bloquesNombres = ['BLOQUE I', 'BLOQUE II', 'BLOQUE III', 'BLOQUE IV'];
+            var bloquesHeaders = ['header-bloque1', 'header-bloque2', 'header-bloque3', 'header-bloque4'];
+            
+            // Contar columnas por bloque
+            for(var b=0; b<4; b++) {
+                var colCount = 0;
+                for(var p=1; p<=4; p++) {
+                    colCount++; // Columna P
+                    if(periodosConRecup[b][p]) {
+                        colCount++; // Columna RP
+                    }
+                }
+                html += '<th colspan="'+colCount+'" class="'+bloquesHeaders[b]+'">'+bloquesNombres[b]+'</th>';
+            }
+            
             html += '<th colspan="4" style="background:#ffc107;color:#333">PROMEDIO BLOQUE</th>';
             html += '<th rowspan="2" style="width:80px;background:#28a745">PROM<br>FINAL</th>';
             html += '<th rowspan="2" style="width:100px;background:#28a745">COND</th>';
             html += '</tr>';
             
-            // FILA 2: Períodos individuales con sus recuperaciones
+            // FILA 2: Períodos individuales con sus recuperaciones (dinámico)
             html += '<tr>';
             var clases = ['bloque1-col', 'bloque2-col', 'bloque3-col', 'bloque4-col'];
+            
             for(var b=0; b<4; b++) {
                 for(var p=1; p<=4; p++) {
                     html += '<th class="'+clases[b]+'">P'+p+'</th>';
-                    html += '<th class="'+clases[b]+'" style="background:#ffe6cc;">RP'+p+'</th>';
+                    if(periodosConRecup[b][p]) {
+                        html += '<th class="'+clases[b]+'" style="background:#ffe6cc;font-style:italic;">RP'+p+'</th>';
+                    }
                 }
             }
+            
             for(var b=1; b<=4; b++) {
                 html += '<th class="promedio-bloques">PB'+b+'</th>';
             }
@@ -3699,6 +4285,7 @@
             
             html += '</thead><tbody>';
             
+            // GENERAR FILAS
             for(var ei=0; ei<datos.estudiantes.length; ei++) {
                 var e = datos.estudiantes[ei];
                 html += '<tr>';
@@ -3712,7 +4299,8 @@
                     
                     for(var p=1; p<=4; p++) {
                         var promPeriodo = calcularPromedioPeriodo(b, p, e.num);
-                        var recuperacion = datos.bloques[b].recuperaciones && datos.bloques[b].recuperaciones[p] ? datos.bloques[b].recuperaciones[p][e.num] : null;
+                        var bd = datos.bloques[b];
+                        var recuperacion = bd.recuperaciones && bd.recuperaciones[p] ? bd.recuperaciones[p][e.num] : null;
                         
                         // MOSTRAR PROMEDIO DEL PERÍODO
                         if(promPeriodo !== null) {
@@ -3725,19 +4313,13 @@
                             html += '<td class="'+clases[b]+' sin-datos">-</td>';
                         }
                         
-                        // MOSTRAR RECUPERACIÓN (SOLO SI HAY CALIFICACIÓN < 70 O SI YA TIENE RECUPERACIÓN)
-                        var mostrarRP = (promPeriodo !== null && promPeriodo < 70) || 
-                                       (recuperacion !== null && recuperacion !== undefined && recuperacion !== '');
-                        
-                        if(mostrarRP) {
+                        // MOSTRAR RECUPERACIÓN (solo si el período tiene columna RP)
+                        if(periodosConRecup[b][p]) {
                             if(recuperacion !== null && recuperacion !== undefined && recuperacion !== '') {
                                 html += '<td class="'+clases[b]+'" style="background:#ffe6cc;font-weight:bold;">'+Math.round(recuperacion)+'</td>';
                             } else {
                                 html += '<td class="'+clases[b]+'" style="background:#ffe6cc;color:#999;">-</td>';
                             }
-                        } else {
-                            // Si la calificación es >= 70, no mostrar nada en RP
-                            html += '<td class="'+clases[b]+'" style="background:#f0f0f0;"></td>';
                         }
                         
                         // DETERMINAR EL VALOR A USAR PARA EL PROMEDIO
@@ -3752,7 +4334,7 @@
                         valoresParaPromedio.push(valorFinal);
                     }
                     
-                    // PROMEDIO DEL BLOQUE: SIEMPRE (P1+P2+P3+P4) / 4
+                    // PROMEDIO DEL BLOQUE: (P1+P2+P3+P4) / 4 (con recuperaciones ya consideradas)
                     var sumaBloque = valoresParaPromedio[0] + valoresParaPromedio[1] + valoresParaPromedio[2] + valoresParaPromedio[3];
                     var promBloque = sumaBloque / 4;
                     promediosBloques.push(promBloque);
@@ -3767,7 +4349,7 @@
                     }
                 }
                 
-                // PROMEDIO FINAL: SIEMPRE (PB1+PB2+PB3+PB4) / 4
+                // PROMEDIO FINAL: (PB1+PB2+PB3+PB4) / 4
                 var sumaFinal = promediosBloques[0] + promediosBloques[1] + promediosBloques[2] + promediosBloques[3];
                 var promedioFinal = sumaFinal / 4;
                 
@@ -4469,6 +5051,8 @@
                 
                 // Para cada bloque
                 for(var b=0; b<4; b++) {
+                    var valoresParaPromedio = [];
+                    
                     // Para cada período
                     for(var p=1; p<=4; p++) {
                         var pr = calcularPromedioPeriodo(b, p, e.num);
@@ -4490,11 +5074,21 @@
                                 row.push('-');
                             }
                         }
+                        
+                        // DETERMINAR EL VALOR A USAR PARA EL PROMEDIO DEL BLOQUE
+                        var valorFinal = pr || 0;
+                        if(recuperacion !== null && !isNaN(recuperacion)) {
+                            // Usar el MAYOR entre promedio y recuperación
+                            valorFinal = Math.max(pr || 0, recuperacion);
+                        }
+                        
+                        valoresParaPromedio.push(valorFinal);
                     }
                     
-                    // Calcular promedio del bloque CON recuperaciones
-                    var pb = calcularPromedioBloque(b, e.num);
-                    promBloques.push(pb !== null ? pb : 0);
+                    // PROMEDIO DEL BLOQUE: (P1 + P2 + P3 + P4) / 4
+                    var sumaBloque = valoresParaPromedio[0] + valoresParaPromedio[1] + valoresParaPromedio[2] + valoresParaPromedio[3];
+                    var promBloque = sumaBloque / 4;
+                    promBloques.push(promBloque);
                 }
                 
                 // Agregar promedios de cada bloque
@@ -4502,16 +5096,10 @@
                     row.push(promBloques[b] > 0 ? promBloques[b].toFixed(2) : '-');
                 }
                 
-                // Calcular promedio final
-                var sumaFinal = 0;
-                var bloquesConNota = 0;
-                for(var b=0; b<4; b++) {
-                    if(promBloques[b] > 0) {
-                        sumaFinal += promBloques[b];
-                        bloquesConNota++;
-                    }
-                }
-                var pf = bloquesConNota > 0 ? (sumaFinal / bloquesConNota) : 0;
+                // PROMEDIO FINAL: (PB1 + PB2 + PB3 + PB4) / 4
+                var sumaFinal = promBloques[0] + promBloques[1] + promBloques[2] + promBloques[3];
+                var pf = sumaFinal / 4;
+                
                 row.push(pf > 0 ? Math.round(pf) : '-');
                 row.push(pf >= 70 ? 'APR' : (pf > 0 ? 'REP' : '-'));
                 
@@ -4694,7 +5282,7 @@
                                                 suma += valor;
                                                 cuenta++;
                                             }
-                                        } else if(NOTAS[cal]) {
+                                        } else if(NOTAS[cal] !== undefined) {
                                             suma += NOTAS[cal];
                                             cuenta++;
                                         }
@@ -5525,9 +6113,29 @@
         }
         
         function cambiarMesAsistencia() {
-            asistencia.mesActual = parseInt(document.getElementById('mesAsistencia').value);
-            asistencia.anioActual = parseInt(document.getElementById('anioAsistencia').value);
+            // Guardar asistencia actual antes de cambiar
+            guardarAsistenciaActual();
+            
+            // Cambiar mes/año en la variable asistencia
+            var nuevoMes = parseInt(document.getElementById('mesAsistencia').value);
+            var nuevoAnio = parseInt(document.getElementById('anioAsistencia').value);
+            
+            asistencia.mesActual = nuevoMes;
+            asistencia.anioActual = nuevoAnio;
+            
+            // Guardar el cambio de mes en asistenciaMultigrado también
+            var grado = datosMultigrado.gradoActual;
+            var seccion = datosMultigrado.seccionActual;
+            
+            if(!asistenciaMultigrado.grados[grado].secciones[seccion]) {
+                asistenciaMultigrado.grados[grado].secciones[seccion] = crearEstructuraAsistencia();
+            }
+            
+            asistenciaMultigrado.grados[grado].secciones[seccion].mesActual = nuevoMes;
+            asistenciaMultigrado.grados[grado].secciones[seccion].anioActual = nuevoAnio;
+            
             renderResumenMes();
+            guardarDatosLocalStorage();
         }
         
         function calcularPorcentajeAsistencia(registros, totalDias) {
@@ -5586,13 +6194,17 @@
         }
         
         function renderResumenMes() {
+            // Sincronizar selectores HTML con la variable asistencia
+            document.getElementById('mesAsistencia').value = asistencia.mesActual;
+            document.getElementById('anioAsistencia').value = asistencia.anioActual;
+            
             const container = document.getElementById('statsAsistencia');
             const mes = asistencia.mesActual;
             const anio = asistencia.anioActual;
             const mesKey = anio + '-' + mes;
             
             if (!asistencia.meses[mesKey]) {
-                container.innerHTML = '<p>No hay datos de asistencia</p>';
+                container.innerHTML = '<p>No hay datos de asistencia para este mes</p>';
                 return;
             }
             
@@ -5897,6 +6509,9 @@
         var asistenciaTemporal = {}; // Para guardar temporalmente la asistencia mientras se edita
         
         function abrirModalTomarAsistencia() {
+            // IMPORTANTE: Recargar asistencia de la sección actual
+            cargarAsistenciaSeccion(datosMultigrado.gradoActual, datosMultigrado.seccionActual);
+            
             if (datos.estudiantes.length === 0) {
                 mostrarMensaje('✗ No hay estudiantes. Agrega estudiantes primero.', true);
                 return;
@@ -6013,6 +6628,9 @@
                 mesData.registros[e.num][diaIndex] = valor;
             }
             
+            // CRÍTICO: Guardar en asistenciaMultigrado
+            guardarAsistenciaActual();
+            
             cerrarModal('modalTomarAsistencia');
             renderResumenMes();
             guardarDatosLocalStorage();
@@ -6020,6 +6638,9 @@
         }
         
         function abrirModalVerAsistencia() {
+            // IMPORTANTE: Recargar asistencia de la sección actual antes de mostrar
+            cargarAsistenciaSeccion(datosMultigrado.gradoActual, datosMultigrado.seccionActual);
+            
             const mes = asistencia.mesActual;
             const anio = asistencia.anioActual;
             const mesKey = anio + '-' + mes;
@@ -6027,7 +6648,7 @@
             const mesesNombres = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
                                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             
-            document.getElementById('tituloVerMes').textContent = 'Asistencia de ' + mesesNombres[mes] + ' ' + anio;
+            document.getElementById('tituloVerMes').textContent = 'Asistencia de ' + mesesNombres[mes] + ' ' + anio + ' (' + datosMultigrado.gradoActual + '-' + datosMultigrado.seccionActual + ')';
             
             // Renderizar selector de días
             const container = document.getElementById('selectorDiasVer');
@@ -6094,6 +6715,9 @@
         }
         
         function abrirModalEditarAsistencia() {
+            // IMPORTANTE: Recargar asistencia de la sección actual
+            cargarAsistenciaSeccion(datosMultigrado.gradoActual, datosMultigrado.seccionActual);
+            
             const mes = asistencia.mesActual;
             const anio = asistencia.anioActual;
             const mesKey = anio + '-' + mes;
@@ -6197,6 +6821,9 @@
                 
                 mesData.registros[e.num][diaIndex] = valor;
             }
+            
+            // CRÍTICO: Guardar en asistenciaMultigrado
+            guardarAsistenciaActual();
             
             cerrarModal('modalEditarAsistencia');
             renderResumenMes();
@@ -6435,7 +7062,7 @@
                                 suma += valor;
                                 cuenta++;
                             }
-                        } else if(NOTAS[cal]) {
+                        } else if(NOTAS[cal] !== undefined) {
                             suma += NOTAS[cal];
                             cuenta++;
                         }
@@ -6525,5 +7152,7 @@
         
         window.onload = iniciar;
     </script>
+    </div> <!-- Fin sistemaCompleto -->
+    
 </body>
 </html>
